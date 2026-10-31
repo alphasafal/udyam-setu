@@ -1,0 +1,44 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Udyam Setu — data privacy and security note</title>
+<style>
+ @page { size: A4; margin: 12mm 14mm 10mm; }
+ body{font-family:Helvetica,Arial,sans-serif;color:#1c1c1e;font-size:9.3pt;line-height:1.28;margin:0}
+ h1{font-size:17pt;margin:0 0 2px} .sub{color:#5b5b60;font-size:9.5pt;margin:0 0 10px}
+ h2{font-size:11pt;margin:11px 0 3px;color:#E40000}
+ p{margin:0 0 5px} ul{margin:0 0 4px 16px;padding:0} li{margin:0 0 2.5px}
+ table{border-collapse:collapse;width:100%;font-size:8.8pt;margin:3px 0 2px} th,td{border:1px solid #d9d9de;padding:3.5px 6px;text-align:left;vertical-align:top} th{background:#f3f3f5}
+ .foot{color:#5b5b60;font-size:8.2pt;margin-top:5px;border-top:1px solid #d9d9de;padding-top:5px}
+</style></head><body>
+<h1>Udyam Setu — data privacy and security choices</h1>
+<p class="sub">One-page note for the Airtel SYNC / Project Udyam Digital submission · Accel Business (fictional operator) · Safal Gupta, VIT Vellore · designed against the Digital Personal Data Protection Act, 2023 and DoT customer-acquisition (CAF) obligations</p>
+
+<h2>1. Principle: look up before you ask, ask before you store</h2>
+<p>The journey is built so that the least data possible is collected at each step, and nothing is collected before the owner has seen why. Needs discovery with the advisor uses <b>no personal data at all</b> — business type, size, city tier and current internet are enough to price a bundle. Identity data enters only at KYC, after an explicit consent screen, and the first move is a <b>registry lookup</b> (GSTIN / Udyam) so that the owner uploads a document only when the lookup cannot answer.</p>
+
+<h2>2. Consent (DPDP s.5–6): specific, itemised, in the owner's language</h2>
+<ul>
+ <li>Notice shown before any upload, in the language the owner chose for the conversation (Hindi, Marathi and English in the prototype). Each purpose is a separate line: <i>identity verification</i>, <i>service activation and the regulatory customer application form</i>, and <i>marketing on WhatsApp</i>. The first two are required to proceed; marketing is unticked by default and can be refused without affecting the order.</li>
+ <li>Every consent is written to an <b>append-only consent ledger</b> with purpose list, timestamp, language and the version of the notice shown (<code>2026-10-v1</code>), so we can prove what the owner agreed to. Withdrawal is one tap on the tracker page and is recorded the same way; processing for marketing stops immediately, and verification data follows the retention schedule below.</li>
+</ul>
+
+<h2>3. Data minimisation and what is never stored</h2>
+<table><tr><th style="width:30%">Data</th><th>Treatment</th></tr>
+<tr><td>GSTIN, Udyam number</td><td>Stored in the KYC store (encrypted at field level, India region). Everywhere else — UI, partner app, logs, analytics — only the masked form (<code>27QH…1ZL</code>) exists.</td></tr>
+<tr><td>Document images (GST / Udyam certificate, address proof, signatory ID)</td><td>Held in a document vault with a time-to-live: <b>deleted 30 days after a decision</b>, <b>7 days if the application is rejected or abandoned</b>. The prototype deletes them immediately after extraction. Every read is logged with the user and a reason.</td></tr>
+<tr><td>Extracted fields (legal name, address, signatory name, bill date)</td><td>Kept on the customer application form only as long as DoT licence conditions require; nothing beyond those fields is retained from the documents.</td></tr>
+<tr><td>PAN, Aadhaar number, bank details</td><td><b>Never stored.</b> Aadhaar e-sign returns a signed hash of the form; the number itself does not enter our systems. Payment runs on a UPI autopay mandate token, not account details.</td></tr>
+<tr><td>Phone number</td><td>Masked in all tables except the notification service; used only for OTP, order updates and, if consented, marketing.</td></tr>
+<tr><td>Text sent to the language model</td><td>PII redacted (names, numbers, addresses) before the model sees it; the model returns a structured needs profile only. No training on customer conversations.</td></tr></table>
+
+<h2>4. Purpose limitation and sharing</h2>
+<p>Verification data is used for verification and the CAF — not for propensity scoring, which runs only on the non-identifying lead profile (segment, size, source, current provider). Channel partners see the assist queue with masked identifiers and the pre-filled quote; they never see document images. No data leaves India, and no third party receives personal data except the government registries queried for verification and the e-sign / DigiLocker providers the owner explicitly invokes.</p>
+
+<h2>5. Security controls</h2>
+<ul>
+ <li><b>Encryption</b> in transit (TLS) and at rest; field-level encryption for identifiers; keys managed outside the application.</li>
+ <li><b>Access</b>: role-based; verification officers see one application at a time, with a reason recorded; bulk reads of the audit or document store raise an alert.</li>
+ <li><b>Audit</b>: every lookup, consent, decision and status change is written with actor, action, masked subject and reason (visible in the prototype's back office).</li>
+ <li><b>Fraud resistance</b>: OCR look-alike repair is accepted only when the result passes the GSTIN checksum and exists in the registry; a GSTIN that is cancelled or suspended, a legal-name mismatch, or an address proof older than 90 days is held for a human, never auto-passed. Session OTP, device binding and e-sign liveness protect against someone else completing KYC for a business.</li>
+ <li><b>Rights</b> (DPDP s.11–14): the owner can view, correct, download or delete their data and withdraw consent from the tracker page; grievance contact and the Data Protection Board route are shown in the notice.</li>
+</ul>
+<p class="foot">All data in this submission is synthetic (Accel YTL Hackathon pack). Retention periods are design choices for the prototype and would be finalised against the DoT CAF retention rules and Accel's records policy before launch.</p>
+</body></html>

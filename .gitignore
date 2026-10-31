@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+udyam_setu.db
+docs/video/
+.pytest_cache/

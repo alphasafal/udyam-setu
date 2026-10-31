@@ -1,0 +1,282 @@
+<title>Udyam Setu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+<style>
+/* Layout: a phone-sized journey column centred on a quiet ground; back office as a second tab, full width. */
+:root{--bg:#f1f1f3;--card:#ffffff;--fg:#1c1c1e;--muted:#5d5d63;--line:#dcdce1;--soft:#f4f4f6;--accent:#e40000;--accent-soft:#fdecec;--ok:#1b8a4c;--ok-soft:#e6f4ec;--warn:#b86a00;--warn-soft:#fff3e0;--info:#2d4f9e;--info-soft:#e8eef9;--wa:#1f8f4e;--wa-soft:#e7f8ee;
+ --font:"Noto Sans","Noto Sans Devanagari",-apple-system,"Segoe UI",Roboto,sans-serif}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#141416;--card:#1f1f23;--fg:#f2f2f4;--muted:#a3a3ab;--line:#35353c;--soft:#2a2a30;--accent:#ff4a4a;--accent-soft:#3a1d1d;--ok:#5fcf8a;--ok-soft:#1d3327;--warn:#f0a94a;--warn-soft:#3a2d16;--info:#8fb0ff;--info-soft:#1f2a44;--wa:#5fd48f;--wa-soft:#1b3326;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141416;--card:#1f1f23;--fg:#f2f2f4;--muted:#a3a3ab;--line:#35353c;--soft:#2a2a30;--accent:#ff4a4a;--accent-soft:#3a1d1d;--ok:#5fcf8a;--ok-soft:#1d3327;--warn:#f0a94a;--warn-soft:#3a2d16;--info:#8fb0ff;--info-soft:#1f2a44;--wa:#5fd48f;--wa-soft:#1b3326;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.4;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 32px}
+.top{max-width:1100px;margin:0 auto 10px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.top .brand{font-weight:700;font-size:16px}.top .brand span{color:var(--accent)}
+.tabs{display:flex;gap:6px}.tabs button{border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:7px 14px;font:inherit;font-size:13px;cursor:pointer}.tabs button.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.phone{max-width:430px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:0 10px 36px rgba(0,0,0,.12)}
+header.ph{padding:14px 18px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--soft)}
+header.ph b span{color:var(--accent)}
+select{border:1px solid var(--line);border-radius:8px;padding:5px 8px;font:inherit;font-size:13px;background:var(--card);color:var(--fg)}
+.steps{display:flex;gap:6px;padding:10px 18px 0}.steps div{flex:1;height:4px;border-radius:2px;background:var(--line)}.steps div.on{background:var(--accent)}
+main{padding:14px 18px 22px;min-height:560px}
+h2{font-size:18px;margin:6px 0 4px;text-wrap:balance}.sub{color:var(--muted);font-size:13px;margin:0 0 12px}
+.bubble{background:var(--soft);border-radius:16px 16px 16px 4px;padding:11px 14px;margin:10px 0;font-size:14.5px}.bubble.me{background:var(--accent-soft);border-radius:16px 16px 4px 16px;margin-left:36px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}.chip{border:1.5px solid var(--line);border-radius:999px;padding:9px 14px;font-size:14px;cursor:pointer;background:var(--card);color:var(--fg)}.chip.sel{border-color:var(--accent);background:var(--accent-soft)}
+.btn{display:block;width:100%;background:var(--accent);color:#fff;border:0;border-radius:12px;padding:13px;font:inherit;font-size:16px;font-weight:600;margin-top:14px;cursor:pointer}.btn.ghost{background:var(--card);color:var(--fg);border:1.5px solid var(--line)}.btn:disabled{opacity:.45;cursor:default}.btn:focus-visible,.chip:focus-visible{outline:2px solid var(--info);outline-offset:2px}
+.price{font-size:34px;font-weight:700;color:var(--accent);line-height:1;font-variant-numeric:tabular-nums}.price small{font-size:14px;color:var(--muted);font-weight:400}
+.line{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--soft)}.line .nm{font-weight:600;font-size:14px}.line .why{color:var(--muted);font-size:12px;margin-top:2px}.line .amt{margin-left:auto;font-weight:600;white-space:nowrap;font-size:14px;font-variant-numeric:tabular-nums}
+.toggle{width:42px;height:24px;border-radius:12px;background:var(--line);position:relative;flex:none;cursor:pointer;margin-top:2px;border:0;padding:0}.toggle.on{background:var(--accent)}.toggle::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}.toggle.on::after{left:21px}
+@media (prefers-reduced-motion:reduce){.toggle::after{transition:none}}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--soft);color:var(--muted);letter-spacing:.02em}.tag.ok{background:var(--ok-soft);color:var(--ok)}.tag.ask{background:var(--warn-soft);color:var(--warn)}.tag.hold{background:var(--accent-soft);color:var(--accent)}.tag.fixed{background:var(--info-soft);color:var(--info)}
+.card{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 0}
+.consent label{display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:8px 0}.consent input{margin-top:3px}
+.muted{color:var(--muted);font-size:12px}
+input[type=text],textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;font-size:15px;background:var(--card);color:var(--fg)}textarea{min-height:72px;resize:vertical}
+.check{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--soft);font-size:13px}
+.thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}.thumbs img{width:100%;border:1px solid var(--line);border-radius:6px;aspect-ratio:1/1.2;object-fit:cover;object-position:top}
+.track{position:relative;margin:14px 0 0 10px;padding-left:22px;border-left:2px solid var(--line)}.track .st{position:relative;padding:0 0 16px}.track .st::before{content:"";position:absolute;left:-30px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--card);border:2px solid var(--line)}.track .st.done::before{background:var(--accent);border-color:var(--accent)}.track .st.cur::before{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}.track .st .t{font-weight:600;font-size:14px}.track .st .d{color:var(--muted);font-size:12px}
+.wa{background:var(--wa-soft);border-left:4px solid var(--wa);padding:10px 12px;border-radius:8px;font-size:13px;margin:12px 0}
+.row{display:flex;gap:8px;align-items:center}.row .btn{margin-top:0;width:auto;padding:10px 14px;font-size:14px}.row > *{min-width:0}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px}.kv b{color:var(--muted);font-weight:500}
+/* back office */
+.bo{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.5fr 1fr;gap:16px}@media (max-width:860px){.bo{grid-template-columns:1fr}}
+.bo .card{background:var(--card);margin:0}.bo h3{margin:0 0 4px;font-size:15px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}th{text-align:left;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line);padding:6px}td{padding:7px 6px;border-bottom:1px solid var(--soft);vertical-align:top}
+.q{display:inline-block;width:22px;height:22px;border-radius:50%;text-align:center;line-height:22px;font-weight:700;font-size:11px;color:#fff;background:#9a9aa0}.q5{background:var(--accent)}.q4{background:#f08080}
+.note{max-width:1100px;margin:12px auto 0;font-size:12px;color:var(--muted)}
+.scorer input{width:100%}
+</style>
+
+<div class="top"><div class="brand">Accel <span>Business</span> · Udyam Setu — live demo</div>
+ <div class="tabs"><button id="tabJ" class="on">Owner journey</button><button id="tabB">Back office</button></div></div>
+
+<div id="journey">
+<div class="phone">
+ <header class="ph"><b>Accel <span>Business</span> · Udyam Setu</b>
+  <select id="lang" aria-label="Language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="mr">मराठी</option></select></header>
+ <div class="steps"><div id="s0" class="on"></div><div id="s1"></div><div id="s2"></div><div id="s3"></div></div>
+ <main id="main"></main>
+</div>
+<p class="note">Everything on this page runs in your browser: the 25-product catalogue and its eligibility rules, the advisor, the mock GSTIN and Udyam registries (3,534 + 2,723 records), the 12 specimen KYC applicants as decided by the real OCR pipeline, and the propensity model's coefficients. All data is synthetic (Accel YTL Hackathon pack). Source: github.com/alphasafal/udyam-setu.</p>
+</div>
+
+<div id="backoffice" hidden>
+ <div class="bo">
+  <div class="card"><h3>Assist queue — leads the advisor could not close</h3><div class="muted" id="auc"></div><div class="tw"><table id="queue"><thead><tr><th>Score</th><th>Lead</th><th>Segment · city</th><th>Stuck at</th><th>Why</th><th>GST</th><th>Route</th></tr></thead><tbody></tbody></table></div></div>
+  <div style="display:grid;gap:16px">
+   <div class="card scorer"><h3>Score a lead</h3><div class="muted">Logistic regression on 13 fields known at lead creation. Change a field and watch the quintile move.</div>
+    <div class="kv" style="margin-top:8px" id="scoreForm"></div><div style="margin-top:10px"><span class="price" id="scoreOut" style="font-size:26px"></span> <span class="muted" id="scoreQ"></span></div><div class="muted" id="scoreDrivers"></div></div>
+   <div class="card"><h3>Live orders (this browser)</h3><div class="tw"><table id="orders"><thead><tr><th>Order</th><th>Business</th><th>Bundle</th><th>₹/mo</th><th>KYC</th><th>Stage</th></tr></thead><tbody></tbody></table></div></div>
+   <div class="card"><h3>Audit log (masked)</h3><div class="muted">Every lookup, consent and decision, with actor and reason. No full identifier is ever written here.</div><div class="tw"><table id="audit"><thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Subject</th><th>Reason</th></tr></thead><tbody></tbody></table></div></div>
+  </div>
+ </div>
+</div>
+
+<script id="data" type="application/json">__DATA__</script>
+<script>
+const D = JSON.parse(document.getElementById("data").textContent);
+const CAT = Object.fromEntries(D.catalogue.map(p => [p.id, p]));
+const $ = s => document.querySelector(s); const main = $("#main");
+const inr = n => "₹" + Number(n).toLocaleString("en-IN");
+const T = {
+  en:{advisor:"Saathi",hello:"I will ask five quick questions and show one monthly price. No visit, no PDF.",free:"Or just tell me about your business… (try: “bakery chain in Pune, 3 outlets, 14 staff, want CCTV, have GST”)",next:"Continue",quote:"Your bundle",quoteSub:"One bill. Tap an add-on to switch it on or off.",perMonth:"/month",setup:"one-time setup",contract:"month contract",live:"live in about",days:"days",asked:"Covers what you asked for",accept:"Accept this price",kyc:"Verify the business",kycSub:"Takes about a minute. We look up your GSTIN first so you type less.",consentT:"Before we start — your consent",c1:"Verify my business identity (GSTIN/Udyam lookup, document check). Needed to activate.",c2:"Keep extracted details on the customer application form as telecom rules require.",c3:"Send me offers on WhatsApp (optional).",retention:"Document photos are deleted 30 days after a decision (7 days if we cannot verify). Identifiers are masked wherever staff can see them. You can withdraw consent from your order page.",agree:"I agree, continue",lookup:"Look up",specimen:"Pick a specimen applicant (K01–K12) to run the checks",run:"Run checks",result:"KYC result",esign:"E-sign and place order",track:"Your order",trackSub:"Check here instead of calling. We message you at every step.",slot:"Choose installation slot",withdraw:"Withdraw consent",removed:"Not offered to you:",handoff:"A specialist will call",name:"Business name",phone:"Mobile number",understood:"Got it",back:"Back",again:"Start again",next_step:"Simulate next step"},
+  hi:{advisor:"साथी",hello:"मैं पाँच छोटे सवाल पूछूँगा और एक मासिक दाम दिखाऊँगा। न विज़िट, न PDF।",free:"या बस अपने व्यवसाय के बारे में बताइए… (जैसे: “mera salon Jaipur me hai, hotspot chalta hai, whatsapp pe offers bhejne hain, gst nahi hai”)",next:"आगे",quote:"आपका बंडल",quoteSub:"एक बिल। ऐड-ऑन छूकर चालू/बंद करें।",perMonth:"/माह",setup:"एक बार का सेटअप",contract:"महीने का अनुबंध",live:"लगभग",days:"दिन में चालू",asked:"आपकी माँगें इसमें शामिल हैं",accept:"यह दाम स्वीकार करें",kyc:"व्यवसाय सत्यापन",kycSub:"लगभग एक मिनट। पहले GSTIN देखते हैं ताकि आपको कम टाइप करना पड़े।",consentT:"शुरू करने से पहले — आपकी सहमति",c1:"मेरे व्यवसाय की पहचान सत्यापित करें (GSTIN/Udyam लुकअप, दस्तावेज़ जाँच)। सक्रिय करने के लिए ज़रूरी।",c2:"टेलीकॉम नियमों के अनुसार निकाले गए विवरण ग्राहक आवेदन फ़ॉर्म पर रखें।",c3:"मुझे WhatsApp पर ऑफ़र भेजें (वैकल्पिक)।",retention:"दस्तावेज़ की फ़ोटो निर्णय के 30 दिन बाद हटा दी जाती हैं (सत्यापन न होने पर 7 दिन)। स्टाफ़ को पहचान संख्याएँ छिपाकर दिखती हैं। आप ऑर्डर पेज से सहमति वापस ले सकते हैं।",agree:"मैं सहमत हूँ, आगे बढ़ें",lookup:"देखें",specimen:"जाँच चलाने के लिए नमूना आवेदक (K01–K12) चुनें",run:"जाँच चलाएँ",result:"KYC परिणाम",esign:"ई-साइन करें और ऑर्डर दें",track:"आपका ऑर्डर",trackSub:"कॉल करने के बजाय यहाँ देखें। हर कदम पर हम संदेश भेजते हैं।",slot:"इंस्टॉलेशन स्लॉट चुनें",withdraw:"सहमति वापस लें",removed:"आपको यह नहीं दिया गया:",handoff:"एक विशेषज्ञ कॉल करेगा",name:"व्यवसाय का नाम",phone:"मोबाइल नंबर",understood:"समझ गया",back:"पीछे",again:"फिर से शुरू करें",next_step:"अगला कदम दिखाएँ"},
+  mr:{advisor:"साथी",hello:"मी पाच छोटे प्रश्न विचारेन आणि एक मासिक किंमत दाखवेन. भेट नाही, PDF नाही.",free:"किंवा फक्त तुमच्या व्यवसायाबद्दल सांगा…",next:"पुढे",quote:"तुमचे बंडल",quoteSub:"एक बिल. अ‍ॅड-ऑन चालू/बंद करा.",perMonth:"/महिना",setup:"एकदाचे सेटअप",contract:"महिन्यांचा करार",live:"सुमारे",days:"दिवसांत सुरू",asked:"तुमच्या गरजा यात आहेत",accept:"ही किंमत स्वीकारा",kyc:"व्यवसाय पडताळणी",kycSub:"सुमारे एक मिनिट. आधी GSTIN पाहतो म्हणजे कमी टाइप करावे लागेल.",consentT:"सुरू करण्यापूर्वी — तुमची संमती",c1:"माझ्या व्यवसायाची ओळख पडताळा (GSTIN/Udyam लुकअप, कागदपत्र तपासणी). सक्रिय करण्यासाठी आवश्यक.",c2:"टेलिकॉम नियमांनुसार काढलेले तपशील ग्राहक अर्जावर ठेवा.",c3:"मला WhatsApp वर ऑफर पाठवा (ऐच्छिक).",retention:"कागदपत्रांचे फोटो निर्णयानंतर 30 दिवसांनी हटवले जातात (पडताळणी न झाल्यास 7 दिवस). कर्मचाऱ्यांना ओळख क्रमांक झाकलेले दिसतात. ऑर्डर पेजवरून संमती मागे घेता येते.",agree:"मी सहमत आहे, पुढे",lookup:"पहा",specimen:"तपासण्यांसाठी नमुना अर्जदार (K01–K12) निवडा",run:"तपासण्या चालवा",result:"KYC निकाल",esign:"ई-साइन करा व ऑर्डर द्या",track:"तुमची ऑर्डर",trackSub:"कॉल करण्याऐवजी इथे पहा. प्रत्येक टप्प्यावर आम्ही संदेश पाठवतो.",slot:"इन्स्टॉलेशन स्लॉट निवडा",withdraw:"संमती मागे घ्या",removed:"तुम्हाला हे दिले नाही:",handoff:"तज्ञ कॉल करतील",name:"व्यवसायाचे नाव",phone:"मोबाइल नंबर",understood:"समजले",back:"मागे",again:"पुन्हा सुरू करा",next_step:"पुढचा टप्पा दाखवा"}
+};
+const t = k => T[S.lang][k];
+const S = { lang:"en", qi:0, answers:{}, advice:null, selected:{}, kyc:null, business:"", phone:"", consent:[], order:null, freeText:"", understood:[], asked:new Set() };
+const AUDIT = []; const ORDERS = [];
+const mask = s => !s ? "" : (s.length > 8 ? s.slice(0,4) + "…" + s.slice(-3) : s.slice(0,2) + "…");
+function audit(actor, action, subject, reason){ AUDIT.unshift({ts:new Date().toISOString().slice(11,19), actor, action, subject:mask(subject), reason}); }
+
+/* ---------------- NLU (same rules as app/nlu.py) ---------------- */
+const CITY = {ahmedabad:1,bengaluru:1,bangalore:1,bhopal:2,chennai:1,coimbatore:2,delhi:1,"new delhi":1,gurgaon:1,gurugram:1,noida:1,hyderabad:1,indore:2,jaipur:2,kochi:2,cochin:2,kolkata:1,lucknow:2,ludhiana:2,mumbai:1,"navi mumbai":1,thane:1,mysuru:2,mysore:2,nagpur:2,nashik:2,patna:2,pune:1,surat:2,vadodara:2,baroda:2,visakhapatnam:2,vizag:2,chandigarh:2,bhubaneswar:2,guwahati:2,ranchi:2,raipur:2,dehradun:2,agra:2,kanpur:2,varanasi:2,rajkot:2,madurai:2,trichy:2,mangalore:2,hubli:2,goa:2,amritsar:2,jodhpur:2,udaipur:2,kota:2,meerut:2,ghaziabad:1,faridabad:1};
+const TYPEW = {factory:["factory","manufactur","plant","mill","workshop","foundry","moulding","molding","packaging unit","textile unit","auto-parts","auto parts","food processing","printing press","karkhana","फ़ैक्ट्री","फैक्ट्री","कारखाना","यूनिट"],
+ chain:["chain","outlets","branches","stores in","franchise","hotel group","gym","pre-school","preschool","multiple locations","all our shops","शाखा","आउटलेट"],
+ clinic:["clinic","doctor","dental","dentist","physio","diagnostic","lab ","pathology","hospital","ca firm","chartered","accountant","coaching","tuition","institute","office","lawyer","law office","advocate","architect","consultan","insurance","real estate","agency","studio","क्लिनिक","कोचिंग","दफ़्तर","ऑफ़िस","ऑफिस","डॉक्टर"],
+ salon:["salon","parlour","parlor","restaurant","cafe","café","bakery","dhaba","sweet shop","mithai","hotel","eatery","canteen","सैलून","रेस्टोरेंट","होटल","ढाबा","बेकरी"],
+ kirana:["shop","kirana","store","pharmacy","medical","chemist","boutique","stationery","hardware","mobile repair","optician","grocery","general store","dukaan","dukan","दुकान","किराना","मेडिकल","फ़ार्मेसी"]};
+const NEEDW = {billing:["bill","billing","upi","pos","inventory","stock","invoice","बिलिंग","बिल ","स्टॉक"],customers:["whatsapp","customer","offer","promotion","sms","marketing","catalogue","catalog","orders on","ग्राहक","ऑफ़र"],cctv:["cctv","camera","surveillance","कैमरा","सीसीटीवी"],email:["email","e-mail","domain","backup","google workspace","office 365","ईमेल","बैकअप"],phone:["ivr","phone line","landline","call recording","toll free","toll-free","1800","receptionist","calls","टोल"],uptime:["never go down","goes down","keeps dropping","downtime","uptime","backup internet","failover","reliable","बंद हो","नेट नहीं"],website:["website","web site","online presence","वेबसाइट"],iot:["machine monitoring","machines","sensor","energy use","iot","मशीनों","मशीन मॉनिटर"],security:["ransomware","virus","antivirus","firewall","hack","security","सुरक्षा"],wifi:["customer wifi","customer wi-fi","guest wifi","guest wi-fi","wifi for customers","free wifi"],simonly:["just a sim","only a sim","only sim","only want a sim","just want a sim","just a mobile","only mobile plan","mobile plan only","sirf sim","bas sim","सिर्फ़ सिम","बस सिम"]};
+const NUMW = {one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,twelve:12,fifteen:15,twenty:20,thirty:30,forty:40,fifty:50,ek:1,do:2,teen:3,char:4,paanch:5,panch:5,das:10,bees:20,pachas:50};
+const num = s => /^\d+$/.test(s) ? +s : (NUMW[s] ?? null);
+function parse(text){
+  const t = " " + text.toLowerCase().replace(/\n/g," ") + " "; const a = {};
+  let best = null; for (const [k, ws] of Object.entries(TYPEW)) for (const w of ws){ const i = t.indexOf(w); if (i >= 0 && (best === null || i < best[0])) best = [i,k]; }
+  if (best) a.business_type = best[1];
+  let m = t.match(/(\d+|[a-z]+)\s*(?:people|person|staff|employees|workers|team members|members|teachers|doctors|log|karmchari|कर्मचारी|लोग)/); const emp = m ? num(m[1]) : null;
+  let m2 = t.match(/(\d+|[a-z]+)\s*(?:stores|outlets|branches|shops|locations|sites|clinics|centres|centers|restaurants|units|offices|dukaan|dukanein|शाखा|आउटलेट|दुकानें)/); const sites = m2 ? num(m2[1]) : null;
+  if (sites && sites >= 2 && [undefined,"kirana","salon","clinic"].includes(a.business_type)) a.business_type = (a.business_type !== "clinic" || sites >= 3) ? "chain" : a.business_type;
+  if (emp !== null || sites !== null){ const e = emp || ([undefined,"kirana","salon"].includes(a.business_type) ? 3 : 12); const band = e <= 5 ? "1-5" : (e <= 25 ? "6-25" : "26-100"); a.employees = band + "|" + (sites || 1); }
+  if (/hotspot|phone data|mobile data|phone ka net|फ़ोन का|हॉटस्पॉट/.test(t)) a.current_internet = "hotspot"; else if (/leased line|lease line|dedicated line|लीज़्ड/.test(t)) a.current_internet = "leased"; else if (/home broadband|home wifi|ghar ka|घर वाला|home connection/.test(t)) a.current_internet = "home"; else if (/broadband|wifi|wi-fi|fibre|fiber|local isp|cable net|airtel|jio|bsnl|act /.test(t)) a.current_internet = "business"; else if (/no internet|nothing yet|koi net nahi|कोई इंटरनेट नहीं/.test(t)) a.current_internet = "none";
+  const needs = Object.entries(NEEDW).filter(([k,ws]) => ws.some(w => t.includes(w))).map(([k]) => k); if (needs.length) a.needs = needs;
+  if (/no gst|without gst|gst nahi|don't have gst|dont have gst|not registered|no gstin|जीएसटी नहीं/.test(t)) a.has_gstin = "no"; else if (/\bgst\b|gstin|gst registered|gst number|जीएसटी/.test(t)) a.has_gstin = "yes";
+  for (const [c, tier] of Object.entries(CITY)) if (new RegExp("\\b" + c + "\\b").test(t)) { a.city_tier = String(tier); a.city = c.replace(/\b\w/g, x => x.toUpperCase()); break; }
+  return a;
+}
+
+/* ---------------- rule engine + templates (same as app/catalogue.py) ---------------- */
+const SEG = {kirana:"micro",salon:"micro",clinic:"prof",chain:"multi",factory:"mfg"};
+function profile(ans){ const p = {business_type: SEG[ans.business_type] ? ans.business_type : "kirana"}; p.segment = SEG[p.business_type];
+  const [emp, sites] = String(ans.employees || "1-5|1").split("|"); p.employees = ({"1-5":3,"6-25":12,"26-100":40})[emp] || 3; p.sites = +sites || 1;
+  if (p.sites >= 3 && (p.segment === "micro" || p.segment === "prof")) p.segment = "multi";
+  p.current_internet = ans.current_internet || "hotspot"; p.needs = Array.isArray(ans.needs) ? ans.needs : []; p.has_gstin = ans.has_gstin === "yes"; p.city_tier = +(ans.city_tier || 2); return p; }
+function errors(pid, p, ids){ const c = CAT[pid]; const e = [];
+  if (!c.tiers.includes(p.city_tier)) e.push(`${c.name} is only sold in tier ${c.tiers.join(", ")} cities`);
+  if (p.employees < c.min_employees) e.push(`${c.name} needs at least ${c.min_employees} employees`);
+  if (p.sites < c.min_sites) e.push(`${c.name} needs at least ${c.min_sites} sites`);
+  if (c.requires_gstin && !p.has_gstin) e.push(`${c.name} needs an active GSTIN`);
+  if (c.requires_one_of.length && !c.requires_one_of.some(x => ids.includes(x))) e.push(`${c.name} needs ${c.requires_one_of.map(x => CAT[x].name).join(" or ")} in the same bundle`);
+  return e; }
+const li = (pid, qty=1, optional=false, selected=true, why="") => ({product_id:pid, qty, unit_price:CAT[pid].price_min, optional, selected, why});
+function recommend(p){ const n = new Set(p.needs); const items = []; let name = "", term = 12;
+  if (n.has("simonly")){ name = "Just a SIM"; term = 1; const lines = Math.max(1, Math.min(Math.floor(p.employees/3), 5));
+    items.push(li("P07", lines, false, true, `${lines} business line${lines>1?"s":""} with 50 GB and unlimited calls; no contract`)); items.push(li("P08",1,true,false,"Upgrade a line to 150 GB with roaming and priority care"));
+    items.push(li(["hotspot","none"].includes(p.current_internet) ? "P04" : "P01",1,true,false,"If you ever want the shop off your phone's hotspot: broadband from ₹899")); items.push(li("P15",1,true,false,"Verified WhatsApp channel with catalogue (needs GSTIN)")); }
+  else if (p.segment === "micro"){ term = p.has_gstin ? 12 : 6; name = p.has_gstin ? "Dukaan Plus" : "Dukaan Start"; const conn = ["hotspot","none","home"].includes(p.current_internet) ? "P04" : "P01";
+    items.push(li(conn,1,false,true, conn === "P04" ? "Plug-and-play 5G AirFiber: live in 2 days, no fibre digging" : "Fibre 100 Mbps for a shop that already has a fibre line"));
+    items.push(li("P07",1,false,true,"One business mobile line with 50 GB so the shop's number stops being your personal number"));
+    items.push(li("P22",1,true,p.has_gstin || n.has("customers") || n.has("wifi"),"Separate customer Wi-Fi with content filtering"));
+    items.push(li("P15",1,true,p.has_gstin,"Verified WhatsApp channel with catalogue; 1,000 conversations a month"));
+    items.push(li("P19",1,true,n.has("billing") || p.has_gstin,"GST-ready billing, inventory and UPI on a tablet"));
+    items.push(li("P23",2,true,n.has("cctv"),"HD cameras with 30-day cloud recording, viewable on your phone"));
+    items.push(li("P18",1,true,n.has("website"),"Domain, 5-page website and SSL")); }
+  else if (p.segment === "prof"){ name = "Clinic & Office"; const users = Math.max(2, Math.min(p.employees, 25));
+    items.push(li("P02",1,false,true,"300 Mbps business fibre with optional static IP")); items.push(li("P09",1,false,true,"4G/5G failover so the clinic never loses billing or appointments"));
+    items.push(li("P16",users,false,true,`Business email on your own domain for ${users} people, with documents and video meetings`)); items.push(li("P20",users,false,true,`Antivirus and ransomware protection for ${users} devices`));
+    items.push(li("P17",1,false,true,"Automatic 1 TB backup of PCs and phones")); items.push(li("P08",2,false,true,"Two mobile lines with 150 GB, roaming and priority care"));
+    items.push(li("P12",2,true,n.has("phone"),"Cloud phone lines with IVR and call recording")); items.push(li("P11",1,true,n.has("cctv")||n.has("phone"),"Fixed public IP for CCTV or remote access"));
+    items.push(li("P23",2,true,n.has("cctv"),"HD cameras with 30-day cloud recording")); items.push(li("P13",1,true,n.has("phone"),"1800 toll-free number for patients or clients")); items.push(li("P18",1,true,n.has("website"),"Domain, 5-page website and SSL")); }
+  else if (p.segment === "multi"){ name = "Multi-site"; term = 24; const s = Math.max(p.sites, 2);
+    items.push(li("P02",s,false,true,`300 Mbps fibre at each of ${s} sites`)); items.push(li("P09",s,false,true,"Failover at every site")); items.push(li("P10",s,false,true,"One dashboard for all links, app-priority routing"));
+    items.push(li("P23",2*s,false,true,"Two cloud cameras per site")); items.push(li("P19",s,false,true,"One POS per site, central inventory")); items.push(li("P08",s,false,true,"One manager line per site"));
+    items.push(li("P13",1,true,true,"One toll-free number routed to the right outlet")); items.push(li("P15",1,true,n.has("customers"),"WhatsApp channel for orders and offers")); }
+  else { name = "Factory Connect (quoted after site survey)"; items.push(li("P05",1,false,true,"Dedicated 20 Mbps leased line with 99.5% SLA")); items.push(li("P21",1,false,true,"Managed firewall watched by the Accel SOC"));
+    items.push(li("P24",10,true,n.has("iot"),"IoT sensors for machine uptime and energy")); items.push(li("P16",10,false,true,"Email and office suite for the office staff")); items.push(li("P25",2,true,n.has("fleet"),"GPS trackers on delivery vehicles"));
+    items.push(li("P20",10,true,n.has("security"),"Antivirus and ransomware protection for office PCs")); items.push(li("P17",1,true,n.has("email")||n.has("security"),"Automatic 1 TB backup")); }
+  const core = items.filter(i => !i.optional).map(i => i.product_id); const kept = [], removed = [];
+  for (const it of items){ const e = errors(it.product_id, p, core); if (e.length) removed.push({name:CAT[it.product_id].name, reasons:e}); else kept.push(it); }
+  return {bundle_name:name, contract_months:term, items:kept, removed, install_days: Math.max(0, ...kept.map(i => CAT[i.product_id].install_days))}; }
+function price(items, sel){ let monthly = 0, setup = 0; const lines = [];
+  for (const it of items){ const on = sel ? (sel[it.product_id] ?? it.selected) : it.selected; const c = CAT[it.product_id];
+    if (it.optional && !on){ lines.push({...it, name:c.name, unit:c.unit, selected:false, setup:c.setup*it.qty}); continue; }
+    monthly += it.unit_price*it.qty; setup += c.setup*it.qty; lines.push({...it, name:c.name, unit:c.unit, selected:true, setup:c.setup*it.qty}); }
+  return {monthly, setup, lines}; }
+function advise(ans){ const p = profile(ans); const rec = recommend(p); const q = price(rec.items); const lang = S.lang;
+  for (const l of q.lines) if (lang !== "en" && D.why[l.product_id]) l.why = D.why[l.product_id][lang];
+  const sitesTxt = p.sites > 1 ? ({en:` across ${p.sites} sites`, hi:`, ${p.sites} जगहों पर`, mr:`, ${p.sites} ठिकाणी`})[lang] : "";
+  const n = q.lines.filter(l => l.selected).length;
+  let summary = p.needs.includes("simonly") ? D.sim_summary[lang].replace("{bundle}", rec.bundle_name).replace("{monthly:,}", q.monthly.toLocaleString("en-IN"))
+    : D.summary[lang].replace("{btype}", D.btype[p.business_type][lang]).replace("{emp}", p.employees).replace("{sites}", sitesTxt).replace("{bundle}", rec.bundle_name).replace("{n}", n).replace("{monthly:,}", q.monthly.toLocaleString("en-IN")).replace("{days}", rec.install_days);
+  const assumptions = []; if (!("has_gstin" in ans)) assumptions.push(({en:"I assumed no GSTIN; say yes to unlock WhatsApp Business, SMS and telephony.",hi:"मैंने मान लिया कि GSTIN नहीं है।",mr:"मी GSTIN नाही असे गृहीत धरले."})[lang]);
+  return {profile:p, bundle_name:rec.bundle_name, contract_months:rec.contract_months, install_days:rec.install_days, removed:rec.removed, items:rec.items, quote:q, summary, assumptions, handoff:p.segment === "mfg", handoff_reason:"Leased lines need a site survey; a specialist will call within one working day with this profile already filled in."}; }
+
+/* ---------------- GSTIN validator (same as app/kyc.py) ---------------- */
+const CP = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+function checksum(g){ if (g.length !== 15 || [...g].some(c => !CP.includes(c))) return false; let tot = 0; for (let i = 0; i < 14; i++){ const v = CP.indexOf(g[i]) * (i % 2 === 0 ? 1 : 2); tot += Math.floor(v/36) + v % 36; } return CP[(36 - tot % 36) % 36] === g[14]; }
+const fmt = g => /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(g);
+const TO_D = {O:"0",D:"0",Q:"0",I:"1",L:"1",S:"5",B:"8",Z:"2",G:"6"}, TO_A = {"0":"O","1":"I","5":"S","8":"B","2":"Z","6":"G"};
+const ALTS = {"0":["O"],O:["0"],"1":["I"],I:["1","J","L","T"],T:["I"],J:["I"],L:["I","1"],"5":["S"],S:["5"],"8":["B"],B:["8"],"2":["Z"],Z:["2"],G:["6"],"6":["G"],D:["0"],Q:["O","0"]};
+const DPOS = new Set([0,1,7,8,9,10]), APOS = new Set([2,3,4,5,6,11]);
+const diff = (a,b) => [...a].map((x,i) => x !== b[i] ? `position ${i+1}: ${x}→${b[i]}` : null).filter(Boolean).join(", ");
+function repair(raw){ let g = raw.toUpperCase().replace(/[^0-9A-Z]/g,""); if (fmt(g) && checksum(g)) return {value:g, repaired:false, note:""};
+  if (g.length === 15){ const ch = [...g]; ch.forEach((c,i) => { if (DPOS.has(i) && !/\d/.test(c) && TO_D[c]) ch[i] = TO_D[c]; else if (APOS.has(i) && /\d/.test(c) && TO_A[c]) ch[i] = TO_A[c]; }); const cand = ch.join("");
+    if (fmt(cand) && checksum(cand)) return {value:cand, repaired:cand !== g, note:`OCR look-alike fixed (${diff(g,cand)}); checksum now valid`};
+    for (let i = 0; i < 15; i++) for (const alt of (ALTS[cand[i]] || [])){ const c2 = cand.slice(0,i) + alt + cand.slice(i+1); if (fmt(c2) && checksum(c2) && D.gstin[c2]) return {value:c2, repaired:true, note:`OCR look-alike fixed (${diff(g,c2)}); checksum valid and record found in registry`}; }
+    g = cand; }
+  return {value:g, repaired:false, note:"checksum fails even after look-alike repair"}; }
+
+/* ---------------- UI: advisor ---------------- */
+function step(i){ [0,1,2,3].forEach(j => $("#s"+j).classList.toggle("on", j <= i)); }
+const Q = () => D.questions.map(q => ({id:q.id, multi:!!q.multi, text:q.text[S.lang], options:q.options.map(o => ({v:o.v, label:o[S.lang]}))}));
+$("#lang").onchange = e => { S.lang = e.target.value; if (S.advice) renderQuote(); else renderAdvisor(); };
+function renderAdvisor(){ step(0); const qs = Q(); const q = qs[S.qi];
+  let h = `<h2>${t("advisor")}</h2><p class="sub">${t("hello")}</p>`;
+  if (S.freeText) h += `<div class="bubble me">${esc(S.freeText)}</div><div class="bubble">${t("understood")}: <b>${S.understood.map(esc).join(" · ") || "—"}</b></div>`;
+  for (let i = 0; i < S.qi; i++){ const qq = qs[i]; if (!S.asked.has(qq.id)) continue; const a = S.answers[qq.id]; const lab = (Array.isArray(a)?a:[a]).map(v => (qq.options.find(o => o.v == v) || {label:v}).label).join(", "); h += `<div class="bubble">${qq.text}</div><div class="bubble me">${esc(lab)}</div>`; }
+  if (!q){ main.innerHTML = h; return; }
+  h += `<div class="bubble">${q.text}</div><div class="chips" id="chips">` + q.options.map(o => `<button class="chip" data-v="${o.v}">${o.label}</button>`).join("") + `</div>`;
+  if (S.qi === 0 && !S.freeText) h += `<textarea id="free" placeholder="${t("free")}"></textarea>`;
+  h += `<button class="btn" id="go" ${q.multi ? "" : "disabled"}>${t("next")}</button>`; main.innerHTML = h;
+  const sel = new Set(); const free = $("#free"); if (free) free.oninput = () => { $("#go").disabled = !free.value.trim() && sel.size === 0; };
+  document.querySelectorAll("#chips .chip").forEach(c => c.onclick = () => { if (q.multi){ c.classList.toggle("sel"); c.classList.contains("sel") ? sel.add(c.dataset.v) : sel.delete(c.dataset.v); } else { document.querySelectorAll("#chips .chip").forEach(x => x.classList.remove("sel")); c.classList.add("sel"); sel.clear(); sel.add(c.dataset.v); $("#go").disabled = false; } });
+  $("#go").onclick = () => { if (free && free.value.trim() && sel.size === 0){ const a = parse(free.value); S.freeText = free.value; Object.assign(S.answers, a);
+      const labels = Object.fromEntries(qs.map(x => [x.id, Object.fromEntries(x.options.map(o => [o.v, o.label]))])); S.understood = []; for (const [k,v] of Object.entries(a)){ if (labels[k]) (Array.isArray(v)?v:[v]).forEach(x => S.understood.push(labels[k][x] || x)); else if (k === "city") S.understood.push(v); }
+      S.qi = 0; return skip(); }
+    S.answers[q.id] = q.multi ? [...sel] : [...sel][0]; S.asked.add(q.id); S.qi++; skip(); }; }
+function skip(){ const qs = Q(); while (qs[S.qi] && S.answers[qs[S.qi].id] !== undefined) S.qi++; if (S.qi >= qs.length){ S.advice = advise(S.answers); S.selected = {}; S.advice.quote.lines.forEach(l => S.selected[l.product_id] = l.selected); return renderQuote(); } renderAdvisor(); }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------------- UI: quote ---------------- */
+function renderQuote(){ step(1); S.advice = advise(S.answers); const a = S.advice; const p = a.profile; const q = price(a.items, S.selected); const ids = q.lines.filter(l => l.selected).map(l => l.product_id);
+  const warnings = []; for (const pid of ids) for (const e of errors(pid, p, ids)) warnings.push(e); const days = Math.max(0, ...ids.map(i => CAT[i].install_days));
+  let h = `<h2>${t("quote")} · ${a.bundle_name}</h2><p class="sub">${t("quoteSub")}</p><div class="bubble">${a.summary}</div>`;
+  h += `<div class="card"><div class="price">${inr(q.monthly)}<small>${t("perMonth")}</small></div><div class="muted">${inr(q.setup)} ${t("setup")} · ${a.contract_months}-${t("contract")} · ${t("live")} ${days} ${t("days")}</div></div>`;
+  for (const l of q.lines) h += `<div class="line">${l.optional ? `<button class="toggle ${l.selected?"on":""}" data-p="${l.product_id}" aria-label="toggle ${l.name}"></button>` : `<span class="tag ok" style="flex:none;margin-top:3px">✓ core</span>`}<div><div class="nm">${l.name}${l.qty>1?" × "+l.qty:""}</div><div class="why">${l.why}</div></div><div class="amt">${inr(l.unit_price*l.qty)}</div></div>`;
+  if (warnings.length) h += `<div class="card" style="border-color:var(--warn)"><b>⚠</b> ${warnings.join("<br>")}</div>`;
+  if (a.assumptions.length) h += `<p class="muted">ℹ ${a.assumptions.join(" ")}</p>`;
+  if (a.removed.length) h += `<p class="muted">${t("removed")} ${a.removed.map(x => x.name + " — " + x.reasons.join("; ")).join(" · ")}</p>`;
+  if (a.handoff) h += `<div class="card" style="background:var(--soft)"><b>${t("handoff")}</b><div class="muted">${a.handoff_reason}</div></div>`;
+  h += `<p class="muted">✔ ${t("asked")}: ${(S.answers.needs||[]).join(", ") || "—"}</p><button class="btn" id="accept">${t("accept")} · ${inr(q.monthly)}${t("perMonth")}</button><button class="btn ghost" id="restart">${t("again")}</button>`;
+  main.innerHTML = h; S.quote = q; S.days = days;
+  document.querySelectorAll(".toggle").forEach(tg => tg.onclick = () => { S.selected[tg.dataset.p] = !S.selected[tg.dataset.p]; renderQuote(); });
+  $("#accept").onclick = renderConsent; $("#restart").onclick = restart; }
+function restart(){ Object.assign(S, {qi:0, answers:{}, advice:null, selected:{}, kyc:null, consent:[], order:null, freeText:"", understood:[], asked:new Set()}); renderAdvisor(); }
+
+/* ---------------- UI: consent + KYC ---------------- */
+function renderConsent(){ step(2); main.innerHTML = `<h2>${t("kyc")}</h2><p class="sub">${t("kycSub")}</p><div class="card consent"><b>${t("consentT")}</b>
+  <label><input type="checkbox" id="c1"> ${t("c1")}</label><label><input type="checkbox" id="c2"> ${t("c2")}</label><label><input type="checkbox" id="c3"> ${t("c3")}</label><p class="muted">${t("retention")}</p></div><button class="btn" id="agree" disabled>${t("agree")}</button>`;
+  const upd = () => $("#agree").disabled = !($("#c1").checked && $("#c2").checked); ["c1","c2","c3"].forEach(i => $("#"+i).onchange = upd);
+  $("#agree").onclick = () => { S.consent = ["kyc","caf"].concat($("#c3").checked ? ["marketing"] : []); audit("owner","consent.given","pending", S.consent.join(",")); renderKyc(); }; }
+function renderKyc(){ main.innerHTML = `<h2>${t("kyc")}</h2>
+  <div class="card"><div class="kv"><b>${t("name")}</b><input type="text" id="biz" value="${esc(S.business)}"><b>${t("phone")}</b><input type="text" id="ph" value="${esc(S.phone)}" placeholder="98xxxxxxxx" inputmode="numeric"></div></div>
+  <div class="card"><div class="row"><input type="text" id="gst" placeholder="GSTIN — try 24X0RXG9365M1Z3" style="text-transform:uppercase"><button class="btn ghost" id="lk">${t("lookup")}</button></div><div id="lkres" class="muted" style="margin-top:8px"></div>
+   <div class="row" style="margin-top:8px"><input type="text" id="ud" placeholder="UDYAM-RJ-00-6577157" style="text-transform:uppercase"><button class="btn ghost" id="lku">${t("lookup")}</button></div><div id="lkures" class="muted" style="margin-top:8px"></div></div>
+  <div class="card"><div class="muted">${t("specimen")}</div><div class="chips" id="spec">${Object.keys(D.specimen).map(k => `<button class="chip" data-k="${k}">${k}</button>`).join("")}</div><div id="specinfo" class="muted"></div><div class="thumbs" id="thumbs"></div></div>
+  <button class="btn" id="run" disabled>${t("run")}</button><div id="kres"></div>`;
+  $("#lk").onclick = () => { const r = repair($("#gst").value.trim()); const reg = D.gstin[r.value]; audit("owner","lookup.gstin", r.value, "pre-fill KYC");
+    $("#lkres").innerHTML = reg ? `<span class="tag ${reg[0]==="Active"?"ok":"hold"}">${reg[0]}</span> ${esc(reg[1])} · ${esc(reg[3])}${r.repaired ? "<br><span class='tag fixed'>fixed</span> " + esc(r.note) : ""}` : `<span class="tag hold">not found</span> ${esc(r.note)}`; if (reg && !$("#biz").value) $("#biz").value = reg[2]; };
+  $("#lku").onclick = () => { const u = D.udyam[$("#ud").value.trim().toUpperCase()]; audit("owner","lookup.udyam", $("#ud").value, "pre-fill KYC"); $("#lkures").innerHTML = u ? `<span class="tag ok">found</span> ${esc(u[0])} · ${u[1]} · ${u[2]}` : `<span class="tag hold">not found</span>`; };
+  let chosen = null; document.querySelectorAll("#spec .chip").forEach(c => c.onclick = () => { document.querySelectorAll("#spec .chip").forEach(x => x.classList.remove("sel")); c.classList.add("sel"); chosen = c.dataset.k; const sp = D.specimen[chosen]; $("#specinfo").textContent = sp.business_name; $("#thumbs").innerHTML = Object.entries(sp.thumbs).map(([k,v]) => `<img src="${v}" alt="${k}">`).join(""); $("#run").disabled = false; if (!$("#biz").value) $("#biz").value = sp.business_name; });
+  $("#run").onclick = () => { S.business = $("#biz").value; S.phone = $("#ph").value; S.kyc = D.specimen[chosen]; audit("kyc-service","kyc.decision", S.kyc.gstin || S.business, S.kyc.decision); renderKycResult(); }; }
+function renderKycResult(){ const r = S.kyc; const cls = {pass:"ok",fixed:"fixed",ask:"ask",hold:"hold"};
+  let h = `<h2>${t("result")}</h2><div class="card"><span class="tag ${cls[r.decision]}" style="font-size:14px">${r.decision.toUpperCase()}</span> <span class="muted">${r.gstin_masked ? "GSTIN " + r.gstin_masked : ""} ${r.udyam_masked ? "· Udyam " + r.udyam_masked : ""}</span><p style="font-size:14px;margin:8px 0 0">${esc(r.next_step)}</p></div>`;
+  for (const c of r.checks) h += `<div class="check"><span class="tag ${cls[c.status]}">${c.status}</span><div><b>${esc(c.name)}</b> — ${esc(c.detail)}</div></div>`;
+  h += r.decision === "hold" ? `<button class="btn ghost" id="back">${t("back")}</button>` : `<button class="btn" id="esign">${t("esign")}</button>`; main.innerHTML = h;
+  if ($("#esign")) $("#esign").onclick = placeOrder; if ($("#back")) $("#back").onclick = renderKyc; }
+
+/* ---------------- UI: order + tracker ---------------- */
+const STAGES = [["Order placed","We have your order and your e-signed form."],["Autopay set up","First month is charged only after the connection is live."],["Provisioning","Your plan and numbers are being created on the Accel network."],["Equipment on its way","Router / SIMs dispatched; you will get a tracking link."],["Installation slot","Engineer visit booked. You can change the slot from this page."],["Live","Everything is on. Your first bill arrives on the 1st; support is one WhatsApp message away."]];
+function placeOrder(){ const id = "UD-" + Math.random().toString(16).slice(2,8).toUpperCase(); const now = new Date(); const eta = new Date(now.getTime() + S.days*864e5).toISOString().slice(0,10);
+  const purge = new Date(now.getTime() + (S.kyc.decision === "pass" ? 30 : 7)*864e5).toISOString().slice(0,10);
+  S.order = {id, business:S.business || "Demo business", bundle:S.advice.bundle_name, monthly:S.quote.monthly, setup:S.quote.setup, contract:S.advice.contract_months, kyc:S.kyc.decision, stage:0, eta, purge, slot:"", consent:{id:"C-"+Math.random().toString(16).slice(2,10), version:"2026-10-v1", withdrawn:false}};
+  ORDERS.unshift(S.order); audit("system","order.created", id, "bundle " + S.order.bundle); renderTracker(); }
+function wa(o){ const st = STAGES[o.stage]; return S.lang === "hi" ? `Accel Business: ऑर्डर ${o.id} — ${st[0]}. अपेक्षित तारीख ${o.eta}। स्थिति: setu.accel/t/${o.id}` : `Accel Business: order ${o.id} — ${st[0]}. ${st[1]} Expected live date ${o.eta}. Track: setu.accel/t/${o.id}`; }
+function renderTracker(){ step(3); const o = S.order;
+  let h = `<h2>${t("track")} · ${o.id}</h2><p class="sub">${t("trackSub")}</p><div class="card"><div class="kv"><b>${esc(o.bundle)}</b><span>${inr(o.monthly)}${t("perMonth")} · ${o.contract} mo</span><b>ETA</b><span>${o.eta}</span><b>KYC</b><span class="tag ${o.kyc==="pass"?"ok":"ask"}">${o.kyc}</span><b>Docs purge</b><span>${o.purge}</span></div></div><div class="track">`
+    + STAGES.map((s,i) => `<div class="st ${i<=o.stage?"done":""} ${i===o.stage?"cur":""}"><div class="t">${s[0]}</div><div class="d">${s[1]}</div></div>`).join("") + `</div><div class="wa">📲 ${esc(wa(o))}</div>
+    <div class="row"><select id="slot" style="flex:1"><option value="">${t("slot")}</option><option>Tomorrow 10–12</option><option>Tomorrow 2–4</option><option>Day after 10–12</option></select><button class="btn ghost" id="slotb">OK</button></div>${o.slot ? `<p class="muted">Slot: ${esc(o.slot)}</p>` : ""}
+    <div class="row" style="margin-top:10px"><button class="btn ghost" id="adv">${t("next_step")}</button><button class="btn ghost" id="wd">${t("withdraw")}</button></div><p class="muted">Consent ${o.consent.id} · notice ${o.consent.version}${o.consent.withdrawn ? " · withdrawn" : ""}</p><button class="btn ghost" id="restart2">${t("again")}</button>`;
+  main.innerHTML = h;
+  $("#slotb").onclick = () => { o.slot = $("#slot").value; audit("owner","order.slot", o.id, o.slot); renderTracker(); };
+  $("#adv").onclick = () => { if (o.stage < STAGES.length - 1){ o.stage++; audit("provisioning","order.stage", o.id, STAGES[o.stage][0]); } renderTracker(); };
+  $("#wd").onclick = () => { o.consent.withdrawn = true; audit("owner","consent.withdrawn", o.id, "owner request from tracker page"); renderTracker(); };
+  $("#restart2").onclick = restart; }
+
+/* ---------------- back office ---------------- */
+const M = D.model; const CATF = ["lead_source","segment","city_tier","preferred_language","has_gstin","has_udyam","current_internet","current_provider","contact_role","annual_turnover_band"], NUMF = ["employee_count","num_sites","monthly_telecom_spend_inr"];
+function score(row){ let z = M.intercept; const drivers = [];
+  M.names.forEach((n,i) => { const [kind, rest] = n.split("__"); if (kind === "c"){ const idx = CATF.findIndex(c => rest.startsWith(c + "_")); const col = CATF[idx]; const val = rest.slice(col.length + 1); if (String(row[col]) === val){ z += M.coef[i]; if (Math.abs(M.coef[i]) > 0.15) drivers.push([Math.abs(M.coef[i]), `${col.replace(/_/g," ")} = ${val} (${M.coef[i]>0?"+":"−"})`]); } }
+    else { const j = NUMF.indexOf(rest); z += M.coef[i] * ((+row[rest] - M.num_mean[j]) / M.num_scale[j]); } });
+  const p = 1/(1+Math.exp(-z)); const q = 1 + M.edges.filter(e => p > e).length; return {p, q, drivers: drivers.sort((a,b) => b[0]-a[0]).slice(0,4).map(d => d[1])}; }
+const OPTS = {lead_source:["Field sales","Channel partner","Website form","Inbound call","Referral","WhatsApp campaign"],segment:["Micro retail & services","Professional offices","Small multi-site businesses","Small manufacturers"],city_tier:["1","2"],preferred_language:["Hindi","English","Marathi","Kannada","Gujarati","Telugu","Tamil","Bengali","Punjabi","Malayalam"],has_gstin:["Y","N"],has_udyam:["Y","N"],current_internet:["Mobile hotspot","Home broadband","Business broadband","Leased line","Mixed per site","None"],current_provider:["Accel (mobile only)","Competitor A","Local ISP","Competitor B","Accel","None"],contact_role:["Owner","Manager","Office admin","Partner"],annual_turnover_band:["< 40 lakh","40 lakh - 1.5 cr","1.5 - 5 cr","5 - 25 cr","25 - 100 cr"]};
+const LEAD = {lead_source:"Website form",segment:"Micro retail & services",city_tier:"2",preferred_language:"Hindi",has_gstin:"N",has_udyam:"N",current_internet:"Mobile hotspot",current_provider:"Accel (mobile only)",contact_role:"Owner",annual_turnover_band:"< 40 lakh",employee_count:3,num_sites:1,monthly_telecom_spend_inr:800};
+function renderBO(){ $("#auc").textContent = `5-fold cross-validated AUC ${D.auc}. Top quintile converts ~8× the bottom. Partners call quintile 5 and 4 first; 1 and 2 stay on digital nurture.`;
+  $("#queue tbody").innerHTML = D.queue.map(l => `<tr><td><span class="q q${l.quintile}">${l.quintile}</span> <span class="muted">${l.score}</span></td><td><b>${esc(l.business_name)}</b><div class="muted">${l.lead_id} · ${l.lead_source}</div></td><td>${l.segment}<div class="muted">${l.city}</div></td><td>${l.stage_reached}</td><td>${l.drop_reason}</td><td>${l.has_gstin}</td><td>${l.quintile>=4?"<b>Call today</b>":l.quintile==3?"Partner after 72 h":"Digital nurture"}</td></tr>`).join("");
+  $("#scoreForm").innerHTML = CATF.map(c => `<b>${c.replace(/_/g," ")}</b><select data-f="${c}">${OPTS[c].map(o => `<option ${LEAD[c]===o?"selected":""}>${o}</option>`).join("")}</select>`).join("") + NUMF.map(c => `<b>${c.replace(/_/g," ")}</b><input type="text" data-f="${c}" value="${LEAD[c]}" inputmode="numeric">`).join("");
+  const upd = () => { document.querySelectorAll("#scoreForm [data-f]").forEach(el => LEAD[el.dataset.f] = el.value); const s = score(LEAD); $("#scoreOut").textContent = (s.p*100).toFixed(1) + "%"; $("#scoreQ").textContent = `activation probability · quintile ${s.q} of 5 · ${s.q>=4?"partner call within 24 h if stalled":s.q==3?"digital, partner after 72 h":"digital nurture only"}`; $("#scoreDrivers").textContent = "Drivers: " + s.drivers.join(" · "); };
+  document.querySelectorAll("#scoreForm [data-f]").forEach(el => el.onchange = upd); upd();
+  $("#orders tbody").innerHTML = ORDERS.map(o => `<tr><td>${o.id}</td><td>${esc(o.business)}</td><td>${esc(o.bundle)}</td><td>${o.monthly}</td><td><span class="tag ${o.kyc==="pass"?"ok":o.kyc}">${o.kyc}</span></td><td>${STAGES[o.stage][0]}</td></tr>`).join("") || `<tr><td colspan="6" class="muted">No orders yet — place one from the owner journey.</td></tr>`;
+  $("#audit tbody").innerHTML = AUDIT.slice(0,30).map(x => `<tr><td class="muted">${x.ts}</td><td>${x.actor}</td><td>${x.action}</td><td><code>${esc(x.subject)}</code></td><td class="muted">${esc(x.reason)}</td></tr>`).join("") || `<tr><td colspan="5" class="muted">Nothing yet.</td></tr>`; }
+$("#tabJ").onclick = () => { $("#journey").hidden = false; $("#backoffice").hidden = true; $("#tabJ").classList.add("on"); $("#tabB").classList.remove("on"); };
+$("#tabB").onclick = () => { $("#journey").hidden = true; $("#backoffice").hidden = false; $("#tabB").classList.add("on"); $("#tabJ").classList.remove("on"); renderBO(); };
+renderAdvisor();
+</script>

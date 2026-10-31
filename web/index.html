@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Udyam Setu</title>
+<style>
+  :root { --red:#E40000; --ink:#1c1c1e; --grey:#5b5b60; --mid:#d9d9de; --light:#f3f3f5; --green:#1b8a4c; --amber:#c77700; --pale:#fdecec; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family: -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Devanagari", sans-serif; background:#e9e9ec; color:var(--ink); }
+  .phone { max-width:420px; margin:16px auto; background:#fff; min-height:calc(100vh - 32px); border-radius:28px; box-shadow:0 10px 40px rgba(0,0,0,.18); overflow:hidden; display:flex; flex-direction:column; }
+  @media (max-width:480px){ .phone{ margin:0; border-radius:0; min-height:100vh; } }
+  header { padding:14px 18px 10px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--light); }
+  header .brand { font-weight:700; font-size:17px; } header .brand span { color:var(--red); }
+  select.lang { border:1px solid var(--mid); border-radius:8px; padding:4px 8px; font-size:13px; background:#fff; }
+  .steps { display:flex; gap:6px; padding:10px 18px 0; }
+  .steps div { flex:1; height:4px; border-radius:2px; background:var(--mid); } .steps div.on { background:var(--red); }
+  main { flex:1; padding:14px 18px 24px; overflow-y:auto; }
+  h2 { font-size:18px; margin:6px 0 4px; } .sub { color:var(--grey); font-size:13px; margin:0 0 12px; }
+  .bubble { background:var(--light); border-radius:16px 16px 16px 4px; padding:12px 14px; font-size:15px; margin:10px 0; line-height:1.4; }
+  .bubble.me { background:var(--pale); border-radius:16px 16px 4px 16px; margin-left:40px; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 4px; }
+  .chip { border:1.5px solid var(--mid); border-radius:999px; padding:9px 14px; font-size:14px; cursor:pointer; background:#fff; }
+  .chip.sel, .chip:active { border-color:var(--red); background:var(--pale); }
+  .btn { display:block; width:100%; background:var(--red); color:#fff; border:0; border-radius:12px; padding:14px; font-size:16px; font-weight:600; margin-top:14px; cursor:pointer; }
+  .btn.ghost { background:#fff; color:var(--ink); border:1.5px solid var(--mid); }
+  .btn:disabled { opacity:.45; }
+  .price { font-size:34px; font-weight:800; color:var(--red); line-height:1; } .price small { font-size:14px; color:var(--grey); font-weight:500; }
+  .line { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--light); }
+  .line .nm { font-weight:600; font-size:14px; } .line .why { color:var(--grey); font-size:12px; margin-top:2px; } .line .amt { margin-left:auto; font-weight:600; white-space:nowrap; font-size:14px; }
+  .toggle { width:42px; height:24px; border-radius:12px; background:var(--mid); position:relative; flex:none; cursor:pointer; margin-top:2px; }
+  .toggle.on { background:var(--red); } .toggle::after { content:""; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition:left .15s; } .toggle.on::after { left:21px; }
+  .tag { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; background:var(--light); color:var(--grey); }
+  .tag.ok { background:#e6f4ec; color:var(--green);} .tag.ask { background:#fff3e0; color:var(--amber);} .tag.hold { background:var(--pale); color:var(--red);} .tag.fixed { background:#e8eef9; color:#2d4f9e; }
+  .card { border:1px solid var(--mid); border-radius:14px; padding:12px 14px; margin:10px 0; }
+  .consent label { display:flex; gap:10px; align-items:flex-start; font-size:14px; margin:8px 0; } .consent input { margin-top:3px; }
+  .muted { color:var(--grey); font-size:12px; }
+  input[type=text], textarea { width:100%; border:1.5px solid var(--mid); border-radius:10px; padding:11px 12px; font-size:15px; font-family:inherit; }
+  textarea { min-height:70px; }
+  .doc { display:flex; align-items:center; gap:10px; padding:10px; border:1.5px dashed var(--mid); border-radius:12px; margin:8px 0; font-size:14px; }
+  .doc input { display:none; } .doc .nm { flex:1; } .doc .st { font-size:12px; color:var(--grey); }
+  .check { display:flex; gap:8px; align-items:flex-start; padding:7px 0; border-bottom:1px solid var(--light); font-size:13px; }
+  .track { position:relative; margin:14px 0 0 10px; padding-left:22px; border-left:2px solid var(--mid); }
+  .track .st { position:relative; padding:0 0 18px; } .track .st::before { content:""; position:absolute; left:-30px; top:2px; width:14px; height:14px; border-radius:50%; background:#fff; border:2px solid var(--mid); }
+  .track .st.done::before { background:var(--red); border-color:var(--red);} .track .st.cur::before { border-color:var(--red); box-shadow:0 0 0 4px var(--pale);} .track .st .t { font-weight:600; font-size:14px;} .track .st .d { color:var(--grey); font-size:12px; }
+  .wa { background:#e7f8ee; border-left:4px solid #25d366; padding:10px 12px; border-radius:8px; font-size:13px; margin:12px 0; }
+  .row { display:flex; gap:8px; } .row .btn { margin-top:8px; }
+  .kv { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:13px; } .kv b { color:var(--grey); font-weight:500; }
+  .caption { position:fixed; left:0; right:0; bottom:0; background:rgba(28,28,30,.92); color:#fff; font-size:16px; padding:12px 18px; text-align:center; display:none; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <header><div class="brand">Accel <span>Business</span> · Udyam Setu</div>
+    <select class="lang" id="lang"><option value="en">English</option><option value="hi">हिन्दी</option><option value="mr">मराठी</option></select></header>
+  <div class="steps"><div id="s0" class="on"></div><div id="s1"></div><div id="s2"></div><div id="s3"></div></div>
+  <main id="main"></main>
+</div>
+<div class="caption" id="caption"></div>
+<script>
+const T = {
+  en:{advisor:"Saathi",hello:"I will ask five quick questions and show one monthly price. No visit, no PDF.",free:"Or just tell me about your business…",next:"Continue",quote:"Your bundle",quoteSub:"One bill. Tap an add-on to switch it on or off.",perMonth:"/month",setup:"one-time setup",contract:"month contract",live:"live in about",days:"days",asked:"Covers what you asked for",accept:"Accept this price",kyc:"Verify the business",kycSub:"Takes about a minute. We look up your GSTIN first so you type less.",consentT:"Before we start — your consent",c1:"Verify my business identity (GSTIN/Udyam lookup, document check). Needed to activate.",c2:"Keep extracted details on the customer application form as telecom rules require.",c3:"Send me offers on WhatsApp (optional).",retention:"Document photos are deleted 30 days after a decision (7 days if we cannot verify). Identifiers are masked wherever staff can see them. You can withdraw consent from your order page.",agree:"I agree, continue",lookup:"Look up",upload:"Upload",specimen:"Demo: use specimen applicant",run:"Run checks",result:"KYC result",esign:"E-sign and place order",track:"Your order",trackSub:"Check here instead of calling. We message you at every step.",slot:"Choose installation slot",withdraw:"Withdraw consent",removed:"Not offered to you:",handoff:"A specialist will call",name:"Business name",phone:"Mobile number",contact:"Signatory name",understood:"Got it"},
+  hi:{advisor:"साथी",hello:"मैं पाँच छोटे सवाल पूछूँगा और एक मासिक दाम दिखाऊँगा। न विज़िट, न PDF।",free:"या बस अपने व्यवसाय के बारे में बताइए…",next:"आगे",quote:"आपका बंडल",quoteSub:"एक बिल। ऐड-ऑन छूकर चालू/बंद करें।",perMonth:"/माह",setup:"एक बार का सेटअप",contract:"महीने का अनुबंध",live:"लगभग",days:"दिन में चालू",asked:"आपकी माँगें इसमें शामिल हैं",accept:"यह दाम स्वीकार करें",kyc:"व्यवसाय सत्यापन",kycSub:"लगभग एक मिनट। पहले GSTIN देखते हैं ताकि आपको कम टाइप करना पड़े।",consentT:"शुरू करने से पहले — आपकी सहमति",c1:"मेरे व्यवसाय की पहचान सत्यापित करें (GSTIN/Udyam लुकअप, दस्तावेज़ जाँच)। सक्रिय करने के लिए ज़रूरी।",c2:"टेलीकॉम नियमों के अनुसार निकाले गए विवरण ग्राहक आवेदन फ़ॉर्म पर रखें।",c3:"मुझे WhatsApp पर ऑफ़र भेजें (वैकल्पिक)।",retention:"दस्तावेज़ की फ़ोटो निर्णय के 30 दिन बाद हटा दी जाती हैं (सत्यापन न होने पर 7 दिन)। स्टाफ़ को पहचान संख्याएँ छिपाकर दिखती हैं। आप ऑर्डर पेज से सहमति वापस ले सकते हैं।",agree:"मैं सहमत हूँ, आगे बढ़ें",lookup:"देखें",upload:"अपलोड",specimen:"डेमो: नमूना आवेदक चुनें",run:"जाँच चलाएँ",result:"KYC परिणाम",esign:"ई-साइन करें और ऑर्डर दें",track:"आपका ऑर्डर",trackSub:"कॉल करने के बजाय यहाँ देखें। हर कदम पर हम संदेश भेजते हैं।",slot:"इंस्टॉलेशन स्लॉट चुनें",withdraw:"सहमति वापस लें",removed:"आपको यह नहीं दिया गया:",handoff:"एक विशेषज्ञ कॉल करेगा",name:"व्यवसाय का नाम",phone:"मोबाइल नंबर",contact:"हस्ताक्षरकर्ता का नाम",understood:"समझ गया"},
+  mr:{advisor:"साथी",hello:"मी पाच छोटे प्रश्न विचारेन आणि एक मासिक किंमत दाखवेन. भेट नाही, PDF नाही.",free:"किंवा फक्त तुमच्या व्यवसायाबद्दल सांगा…",next:"पुढे",quote:"तुमचे बंडल",quoteSub:"एक बिल. अ‍ॅड-ऑन चालू/बंद करा.",perMonth:"/महिना",setup:"एकदाचे सेटअप",contract:"महिन्यांचा करार",live:"सुमारे",days:"दिवसांत सुरू",asked:"तुमच्या गरजा यात आहेत",accept:"ही किंमत स्वीकारा",kyc:"व्यवसाय पडताळणी",kycSub:"सुमारे एक मिनिट. आधी GSTIN पाहतो म्हणजे कमी टाइप करावे लागेल.",consentT:"सुरू करण्यापूर्वी — तुमची संमती",c1:"माझ्या व्यवसायाची ओळख पडताळा (GSTIN/Udyam लुकअप, कागदपत्र तपासणी). सक्रिय करण्यासाठी आवश्यक.",c2:"टेलिकॉम नियमांनुसार काढलेले तपशील ग्राहक अर्जावर ठेवा.",c3:"मला WhatsApp वर ऑफर पाठवा (ऐच्छिक).",retention:"कागदपत्रांचे फोटो निर्णयानंतर 30 दिवसांनी हटवले जातात (पडताळणी न झाल्यास 7 दिवस). कर्मचाऱ्यांना ओळख क्रमांक झाकलेले दिसतात. ऑर्डर पेजवरून संमती मागे घेता येते.",agree:"मी सहमत आहे, पुढे",lookup:"पहा",upload:"अपलोड",specimen:"डेमो: नमुना अर्जदार निवडा",run:"तपासण्या चालवा",result:"KYC निकाल",esign:"ई-साइन करा व ऑर्डर द्या",track:"तुमची ऑर्डर",trackSub:"कॉल करण्याऐवजी इथे पहा. प्रत्येक टप्प्यावर आम्ही संदेश पाठवतो.",slot:"इन्स्टॉलेशन स्लॉट निवडा",withdraw:"संमती मागे घ्या",removed:"तुम्हाला हे दिले नाही:",handoff:"तज्ञ कॉल करतील",name:"व्यवसायाचे नाव",phone:"मोबाइल नंबर",contact:"स्वाक्षरीकर्त्याचे नाव",understood:"समजले"}
+};
+const S = { lang:"en", qi:0, answers:{}, questions:[], advice:null, selected:{}, kyc:null, business:"", phone:"", contact:"", consent:[], order:null };
+const $ = s => document.querySelector(s); const main = $("#main");
+const api = (p, o) => fetch(p, o).then(r => r.json());
+const t = k => T[S.lang][k];
+const inr = n => "₹" + Number(n).toLocaleString("en-IN");
+function step(i){ [0,1,2,3].forEach(j => $("#s"+j).classList.toggle("on", j<=i)); }
+$("#lang").onchange = async e => { S.lang = e.target.value; await loadQ(); S.qi = 0; S.answers = {}; renderAdvisor(); };
+async function loadQ(){ S.questions = (await api("/api/questions?lang="+S.lang)).questions; }
+
+// ---------- 1. advisor ----------
+function renderAdvisor(){
+  step(0);
+  const q = S.questions[S.qi];
+  let h = `<h2>${t("advisor")}</h2><p class="sub">${t("hello")}</p>`;
+  if (S.freeText) h += `<div class="bubble me">${S.freeText}</div><div class="bubble">${t("understood")}: <b>${(S.understood||[]).join(" · ")||"—"}</b></div>`;
+  for (let i=0;i<S.qi;i++){ if (S.freeText && S.answers[S.questions[i].id] !== undefined && !S.askedIds?.has(S.questions[i].id)) continue; const qq=S.questions[i]; const a=S.answers[qq.id]; const lab = (Array.isArray(a)?a:[a]).map(v=>(qq.options.find(o=>o.v==v)||{label:v}).label).join(", ");
+    h += `<div class="bubble">${qq.text}</div><div class="bubble me">${lab}</div>`; }
+  if (!q){ h += `<div class="bubble">…</div>`; main.innerHTML=h; return; }
+  h += `<div class="bubble">${q.text}</div><div class="chips" id="chips">` + q.options.map(o=>`<div class="chip" data-v="${o.v}">${o.label}</div>`).join("") + `</div>`;
+  if (S.qi===0) h += `<textarea id="free" placeholder="${t("free")}"></textarea>`;
+  h += `<button class="btn" id="go" ${q.multi?"":"disabled"}>${t("next")}</button>`;
+  main.innerHTML = h;
+  const sel = new Set();
+  if ($("#free")) $("#free").oninput = () => { $("#go").disabled = !$("#free").value.trim() && sel.size === 0; };
+  document.querySelectorAll("#chips .chip").forEach(c => c.onclick = () => {
+    if (q.multi){ c.classList.toggle("sel"); c.classList.contains("sel")?sel.add(c.dataset.v):sel.delete(c.dataset.v); }
+    else { document.querySelectorAll("#chips .chip").forEach(x=>x.classList.remove("sel")); c.classList.add("sel"); sel.clear(); sel.add(c.dataset.v); $("#go").disabled=false; }
+  });
+  $("#go").onclick = async () => {
+    if (S.qi===0 && $("#free").value.trim() && sel.size===0){ // free text path
+      const r = await api("/api/parse",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:$("#free").value,language:S.lang})});
+      S.freeText = $("#free").value; S.understood = r.understood;
+      Object.assign(S.answers, r.answers);
+      if (S.answers.employees && typeof S.answers.employees === "string" && !S.questions[1].options.some(o=>o.v===S.answers.employees)) { /* exact count from text; keep as is */ }
+      S.qi = 0; return skipKnown();
+    }
+    S.answers[q.id] = q.multi ? [...sel] : [...sel][0];
+    (S.askedIds = S.askedIds || new Set()).add(q.id);
+    S.qi++; skipKnown();
+  };
+}
+function skipKnown(){ while (S.questions[S.qi] && S.answers[S.questions[S.qi].id] !== undefined) S.qi++; if (S.qi >= S.questions.length) return getAdvice(); renderAdvisor(); }
+async function getAdvice(){
+  main.innerHTML = `<div class="bubble">…</div>`;
+  S.advice = await api("/api/advise",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({answers:S.answers,language:S.lang})});
+  S.selected = {}; S.advice.quote.lines.forEach(l => S.selected[l.product_id] = l.selected);
+  renderQuote();
+}
+
+// ---------- 2. quote ----------
+async function renderQuote(){
+  step(1);
+  const a = S.advice;
+  const r = await api("/api/reprice",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({answers:S.answers,language:S.lang,selected:S.selected})});
+  const q = r.quote; const lines = q.lines;
+  let h = `<h2>${t("quote")} · ${a.bundle_name}</h2><p class="sub">${t("quoteSub")}</p>`;
+  h += `<div class="bubble">${a.summary}</div>`;
+  h += `<div class="card"><div class="price">${inr(q.monthly)}<small>${t("perMonth")}</small></div><div class="muted">${inr(q.setup)} ${t("setup")} · ${a.contract_months}-${t("contract")} · ${t("live")} ${r.install_days} ${t("days")}</div></div>`;
+  lines.forEach(l => { h += `<div class="line">${l.optional?`<div class="toggle ${l.selected?"on":""}" data-p="${l.product_id}"></div>`:`<div class="tag ok" style="flex:none;margin-top:3px">✓ core</div>`}<div><div class="nm">${l.name} ${l.qty>1?"× "+l.qty:""}</div><div class="why">${l.why}</div></div><div class="amt">${inr(l.unit_price*l.qty)}</div></div>`; });
+  if (r.warnings.length) h += `<div class="card" style="border-color:var(--amber)"><b>⚠</b> ${r.warnings.join("<br>")}</div>`;
+  if (a.assumptions && a.assumptions.length) h += `<p class="muted">ℹ ${a.assumptions.join(" ")}</p>`;
+  if (a.removed.length) h += `<p class="muted">${t("removed")} ${a.removed.map(x=>x.name+" — "+x.reasons.join("; ")).join(" · ")}</p>`;
+  if (a.handoff) h += `<div class="card" style="background:var(--light)"><b>${t("handoff")}</b><div class="muted">${a.handoff_reason}</div></div>`;
+  h += `<p class="muted">✔ ${t("asked")}: ${(S.answers.needs||[]).join(", ")||"—"}</p>`;
+  h += `<button class="btn" id="accept">${t("accept")} · ${inr(q.monthly)}${t("perMonth")}</button>`;
+  main.innerHTML = h;
+  document.querySelectorAll(".toggle").forEach(tg => { tg.onclick = () => { S.selected[tg.dataset.p] = !S.selected[tg.dataset.p]; renderQuote(); }; });
+  $("#accept").onclick = renderConsent;
+}
+
+// ---------- 3. KYC ----------
+function renderConsent(){
+  step(2);
+  main.innerHTML = `<h2>${t("kyc")}</h2><p class="sub">${t("kycSub")}</p>
+  <div class="card consent"><b>${t("consentT")}</b>
+    <label><input type="checkbox" id="c1"> ${t("c1")}</label>
+    <label><input type="checkbox" id="c2"> ${t("c2")}</label>
+    <label><input type="checkbox" id="c3"> ${t("c3")}</label>
+    <p class="muted">${t("retention")}</p></div>
+  <button class="btn" id="agree" disabled>${t("agree")}</button>`;
+  const upd = () => $("#agree").disabled = !($("#c1").checked && $("#c2").checked);
+  ["c1","c2","c3"].forEach(i => $("#"+i).onchange = upd);
+  $("#agree").onclick = () => { S.consent = ["kyc","caf"].concat($("#c3").checked?["marketing"]:[]); renderKyc(); };
+}
+function renderKyc(){
+  const docs = ["gst_certificate","udyam_certificate","address_proof","signatory_id"];
+  const names = {gst_certificate:"GST certificate",udyam_certificate:"Udyam certificate",address_proof:"Address proof (bill ≤ 90 days)",signatory_id:"Signatory ID"};
+  main.innerHTML = `<h2>${t("kyc")}</h2>
+   <div class="card"><div class="kv"><b>${t("name")}</b><input type="text" id="biz" value="${S.business}"><b>${t("phone")}</b><input type="text" id="ph" value="${S.phone}" placeholder="98xxxxxxxx"><b>${t("contact")}</b><input type="text" id="ct" value="${S.contact}"></div></div>
+   <div class="card"><div class="row"><input type="text" id="gst" placeholder="GSTIN (15 characters)" style="text-transform:uppercase"><button class="btn ghost" id="lk" style="width:auto;margin:0">${t("lookup")}</button></div><div id="lkres" class="muted" style="margin-top:8px"></div>
+   <div class="row" style="margin-top:8px"><input type="text" id="ud" placeholder="UDYAM-XX-00-0000000" style="text-transform:uppercase"><button class="btn ghost" id="lku" style="width:auto;margin:0">${t("lookup")}</button></div><div id="lkures" class="muted" style="margin-top:8px"></div></div>
+   ${docs.map(d=>`<label class="doc"><input type="file" accept="image/*" data-d="${d}"><span class="nm">${names[d]}</span><span class="st">${t("upload")}</span></label>`).join("")}
+   <div class="row"><select class="lang" id="spec" style="flex:1"><option value="">${t("specimen")}</option>${Array.from({length:12},(_,i)=>`<option>K${String(i+1).padStart(2,"0")}</option>`).join("")}</select></div>
+   <button class="btn" id="run">${t("run")}</button><div id="kres"></div>`;
+  const files = {};
+  document.querySelectorAll(".doc input").forEach(inp => inp.onchange = () => { files[inp.dataset.d] = inp.files[0]; inp.parentElement.querySelector(".st").textContent = inp.files[0].name; });
+  $("#lk").onclick = async () => { const r = await api("/api/lookup/gstin/"+encodeURIComponent($("#gst").value.trim().toUpperCase())); $("#lkres").innerHTML = r.found ? `<span class="tag ${r.status==="Active"?"ok":"hold"}">${r.status}</span> ${r.legal_name} · ${r.address}${r.repaired?"<br><span class='tag fixed'>fixed</span> "+r.note:""}` : `<span class="tag hold">not found</span> ${r.note||""}`; if (r.found && !$("#biz").value) $("#biz").value = r.trade_name; };
+  $("#lku").onclick = async () => { const r = await api("/api/lookup/udyam/"+encodeURIComponent($("#ud").value.trim().toUpperCase())); $("#lkures").innerHTML = r.found ? `<span class="tag ok">found</span> ${r.enterprise_name} · ${r.type} · ${r.city}` : `<span class="tag hold">not found</span>`; };
+  $("#run").onclick = async () => {
+    S.business = $("#biz").value; S.phone = $("#ph").value; S.contact = $("#ct").value;
+    $("#kres").innerHTML = `<div class="bubble">…</div>`;
+    let res;
+    if ($("#spec").value){ res = await api("/api/kyc/specimen/"+$("#spec").value); S.business = S.business || res.business_name; }
+    else { const fd = new FormData(); fd.append("business_name",S.business); fd.append("gstin",$("#gst").value); fd.append("udyam_number",$("#ud").value); fd.append("contact_name",S.contact); fd.append("consent_purposes",S.consent.join(",")); fd.append("language",S.lang);
+      for (const d in files) fd.append(d, files[d]); res = await fetch("/api/kyc",{method:"POST",body:fd}).then(r=>r.json()); }
+    S.kyc = res; renderKycResult();
+  };
+}
+function renderKycResult(){
+  const r = S.kyc; const cls = {pass:"ok",fixed:"fixed",ask:"ask",hold:"hold"};
+  let h = `<h2>${t("result")}</h2><div class="card"><span class="tag ${cls[r.decision]}" style="font-size:14px">${r.decision.toUpperCase()}</span> <span class="muted">${r.gstin_masked?"GSTIN "+r.gstin_masked:""} ${r.udyam_masked?"· Udyam "+r.udyam_masked:""}</span><p style="font-size:14px;margin:8px 0 0">${r.next_step}</p></div>`;
+  r.checks.forEach(c => h += `<div class="check"><span class="tag ${cls[c.status]}">${c.status}</span><div><b>${c.name}</b> — ${c.detail}</div></div>`);
+  h += r.decision === "hold" ? `<button class="btn ghost" onclick="renderKyc()">Back</button>` : `<button class="btn" id="esign">${t("esign")}</button>`;
+  main.innerHTML = h;
+  if ($("#esign")) $("#esign").onclick = placeOrder;
+}
+async function placeOrder(){
+  S.order = await api("/api/orders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({business:S.business||"Demo business",phone:S.phone||"9999999999",language:S.lang,answers:S.answers,selected:S.selected,bundle_name:S.advice.bundle_name,contract_months:S.advice.contract_months,kyc_decision:S.kyc.decision,gstin:S.kyc.gstin||"",consent_purposes:S.consent})});
+  renderTracker();
+}
+
+// ---------- 4. tracker ----------
+async function renderTracker(){
+  step(3);
+  const o = await api("/api/orders/"+S.order.id);
+  let h = `<h2>${t("track")} · ${o.id}</h2><p class="sub">${t("trackSub")}</p>
+  <div class="card"><div class="kv"><b>${o.bundle_name}</b><span>${inr(o.monthly)}${t("perMonth")} · ${o.contract_months} mo</span><b>ETA</b><span>${o.eta}</span><b>KYC</b><span class="tag ${o.kyc_decision==="pass"?"ok":"ask"}">${o.kyc_decision}</span><b>Docs purge</b><span>${o.docs_purge_on}</span></div></div>
+  <div class="track">` + o.stages.map(s=>`<div class="st ${s.done?"done":""} ${s.current?"cur":""}"><div class="t">${s.title}</div><div class="d">${s.detail}</div></div>`).join("") + `</div>
+  <div class="wa">📲 ${o.whatsapp_preview}</div>
+  <div class="row"><select class="lang" id="slot" style="flex:1"><option value="">${t("slot")}</option><option>Tomorrow 10–12</option><option>Tomorrow 2–4</option><option>Day after 10–12</option></select><button class="btn ghost" id="slotb" style="width:auto;margin:0">OK</button></div>
+  ${o.slot?`<p class="muted">Slot: ${o.slot}</p>`:""}
+  <div class="row"><button class="btn ghost" id="adv">Simulate next step</button><button class="btn ghost" id="wd">${t("withdraw")}</button></div>
+  <p class="muted">Consent ${o.consent?o.consent.id+" · notice "+o.consent.notice_version+(o.consent.withdrawn?" · withdrawn":""):""}</p>`;
+  main.innerHTML = h;
+  $("#slotb").onclick = async () => { const fd = new FormData(); fd.append("slot",$("#slot").value); await fetch("/api/orders/"+o.id+"/slot",{method:"POST",body:fd}); renderTracker(); };
+  $("#adv").onclick = async () => { await api("/api/orders/"+o.id+"/advance",{method:"POST"}); renderTracker(); };
+  $("#wd").onclick = async () => { await api("/api/orders/"+o.id+"/withdraw",{method:"POST"}); renderTracker(); };
+}
+window.showCaption = (txt) => { const c = $("#caption"); c.textContent = txt; c.style.display = txt ? "block" : "none"; };
+loadQ().then(renderAdvisor);
+</script>
+</body>
+</html>

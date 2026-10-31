@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Udyam Setu · Back office</title>
+<style>
+  :root { --red:#E40000; --ink:#1c1c1e; --grey:#5b5b60; --mid:#d9d9de; --light:#f3f3f5; --green:#1b8a4c; --amber:#c77700; --pale:#fdecec; }
+  body { margin:0; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; background:#f6f6f8; color:var(--ink); }
+  header { background:#fff; border-bottom:1px solid var(--mid); padding:14px 24px; display:flex; justify-content:space-between; align-items:center; }
+  header b span { color:var(--red); }
+  main { padding:18px 24px; display:grid; grid-template-columns: 1.4fr 1fr; gap:18px; }
+  .card { background:#fff; border:1px solid var(--mid); border-radius:14px; padding:14px 16px; }
+  h3 { margin:0 0 4px; font-size:15px; } .muted { color:var(--grey); font-size:12px; }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; margin-top:10px; }
+  th { text-align:left; color:var(--grey); font-weight:600; border-bottom:1px solid var(--mid); padding:6px 6px; }
+  td { padding:7px 6px; border-bottom:1px solid var(--light); vertical-align:top; }
+  .q { display:inline-block; width:22px; height:22px; border-radius:50%; text-align:center; line-height:22px; font-weight:700; font-size:11px; color:#fff; background:#b8b8be; }
+  .q5 { background:var(--red);} .q4 { background:#f08080;} .q3 { background:#9a9aa0; }
+  .tag { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; background:var(--light); color:var(--grey); }
+  .ok { background:#e6f4ec; color:var(--green);} .ask { background:#fff3e0; color:var(--amber);} .hold { background:var(--pale); color:var(--red);}
+  button { border:1px solid var(--mid); background:#fff; border-radius:8px; padding:5px 10px; font-size:12px; cursor:pointer; }
+  button.red { background:var(--red); color:#fff; border-color:var(--red); }
+  .full { grid-column: 1 / -1; }
+</style>
+</head>
+<body>
+<header><b>Accel <span>Business</span> · Udyam Setu back office</b><span class="muted">Partner & sales view · identifiers masked by default</span></header>
+<main>
+  <div class="card"><h3>Assist queue — leads the advisor could not close</h3><div class="muted" id="auc"></div>
+    <table id="queue"><thead><tr><th>Score</th><th>Lead</th><th>Segment · city</th><th>Stuck at</th><th>Why</th><th>Lang</th><th>GST</th><th>Spend</th><th>Route</th></tr></thead><tbody></tbody></table></div>
+  <div>
+    <div class="card"><h3>Live orders</h3><table id="orders"><thead><tr><th>Order</th><th>Business</th><th>Bundle</th><th>₹/mo</th><th>KYC</th><th>Stage</th><th></th></tr></thead><tbody></tbody></table></div>
+    <div class="card" style="margin-top:18px"><h3>Audit log (masked)</h3><div class="muted">Every lookup, consent and decision, with actor and reason. No full identifier is ever written here.</div><table id="audit"><thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Subject</th><th>Reason</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</main>
+<script>
+const api = (p,o) => fetch(p,o).then(r=>r.json());
+async function load(){
+  const q = await api("/api/backoffice/queue");
+  document.getElementById("auc").textContent = `Logistic regression on lead profile · 5-fold CV AUC ${q.cv_auc} · top quintile converts ~8× the bottom. Call quintile 5 and 4 first.`;
+  document.querySelector("#queue tbody").innerHTML = q.leads.map(l => `<tr><td><span class="q q${l.quintile}">${l.quintile}</span> <span class="muted">${l.score}</span></td><td><b>${l.business_name}</b><div class="muted">${l.lead_id} · ${l.lead_source}</div></td><td>${l.segment}<div class="muted">${l.city}</div></td><td>${l.stage_reached}</td><td>${l.drop_reason}</td><td>${l.preferred_language}</td><td>${l.has_gstin}</td><td>₹${l.monthly_telecom_spend_inr}</td><td>${l.quintile>=4?"<b>Call today</b>":l.quintile==3?"Partner after 72 h":"Digital nurture"}</td></tr>`).join("");
+  const o = await api("/api/backoffice/orders");
+  document.querySelector("#orders tbody").innerHTML = o.map(x => `<tr><td>${x.id}</td><td>${x.business}</td><td>${x.bundle_name}</td><td>${x.monthly}</td><td><span class="tag ${x.kyc_decision==="pass"?"ok":x.kyc_decision}">${x.kyc_decision}</span></td><td>${x.stage_title}</td><td><button onclick="adv('${x.id}')">Next step ▸</button></td></tr>`).join("") || `<tr><td colspan="7" class="muted">No orders yet — place one from the owner journey.</td></tr>`;
+  const a = await api("/api/backoffice/audit");
+  document.querySelector("#audit tbody").innerHTML = a.map(x => `<tr><td class="muted">${x.ts.slice(11)}</td><td>${x.actor}</td><td>${x.action}</td><td><code>${x.subject_masked}</code></td><td class="muted">${x.reason}</td></tr>`).join("");
+}
+async function adv(id){ await api("/api/orders/"+id+"/advance",{method:"POST"}); load(); }
+load(); setInterval(load, 5000);
+</script>
+</body>
+</html>
