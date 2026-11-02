@@ -138,9 +138,9 @@ def recommend(profile: Profile) -> dict:
         conn = "P04" if profile.current_internet in ("hotspot", "none", "home") else "P01"
         items.append(_li(conn, why="Plug-and-play 5G AirFiber: live in 2 days, no fibre digging" if conn == "P04" else "Fibre 100 Mbps for a shop that already has a fibre line"))
         items.append(_li("P07", why="One business mobile line with 50 GB so the shop's number stops being your personal number"))
-        items.append(_li("P22", optional=True, selected=profile.has_gstin or "customers" in n or "wifi" in n, why="Separate customer Wi-Fi with content filtering"))
-        items.append(_li("P15", optional=True, selected=profile.has_gstin, why="Verified WhatsApp channel with catalogue; 1,000 conversations a month"))
-        items.append(_li("P19", optional=True, selected="billing" in n or profile.has_gstin, why="GST-ready billing, inventory and UPI on a tablet"))
+        items.append(_li("P22", optional=True, selected="wifi" in n or "customers" in n, why="Separate customer Wi-Fi with content filtering"))
+        items.append(_li("P15", optional=True, selected=profile.has_gstin and "customers" in n, why="Verified WhatsApp channel with catalogue; 1,000 conversations a month"))
+        items.append(_li("P19", optional=True, selected="billing" in n, why="GST-ready billing, inventory and UPI on a tablet"))
         items.append(_li("P23", qty=2, optional=True, selected="cctv" in n, why="HD cameras with 30-day cloud recording, viewable on your phone"))
         items.append(_li("P18", optional=True, selected="website" in n, why="Domain, 5-page website and SSL"))
     elif seg == "prof":

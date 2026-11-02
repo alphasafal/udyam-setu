@@ -136,9 +136,9 @@ function recommend(p){ const n = new Set(p.needs); const items = []; let name = 
   else if (p.segment === "micro"){ term = p.has_gstin ? 12 : 6; name = p.has_gstin ? "Dukaan Plus" : "Dukaan Start"; const conn = ["hotspot","none","home"].includes(p.current_internet) ? "P04" : "P01";
     items.push(li(conn,1,false,true, conn === "P04" ? "Plug-and-play 5G AirFiber: live in 2 days, no fibre digging" : "Fibre 100 Mbps for a shop that already has a fibre line"));
     items.push(li("P07",1,false,true,"One business mobile line with 50 GB so the shop's number stops being your personal number"));
-    items.push(li("P22",1,true,p.has_gstin || n.has("customers") || n.has("wifi"),"Separate customer Wi-Fi with content filtering"));
-    items.push(li("P15",1,true,p.has_gstin,"Verified WhatsApp channel with catalogue; 1,000 conversations a month"));
-    items.push(li("P19",1,true,n.has("billing") || p.has_gstin,"GST-ready billing, inventory and UPI on a tablet"));
+    items.push(li("P22",1,true,n.has("customers") || n.has("wifi"),"Separate customer Wi-Fi with content filtering"));
+    items.push(li("P15",1,true,p.has_gstin && n.has("customers"),"Verified WhatsApp channel with catalogue; 1,000 conversations a month"));
+    items.push(li("P19",1,true,n.has("billing"),"GST-ready billing, inventory and UPI on a tablet"));
     items.push(li("P23",2,true,n.has("cctv"),"HD cameras with 30-day cloud recording, viewable on your phone"));
     items.push(li("P18",1,true,n.has("website"),"Domain, 5-page website and SSL")); }
   else if (p.segment === "prof"){ name = "Clinic & Office"; const users = Math.max(2, Math.min(p.employees, 25));

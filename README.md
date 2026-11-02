@@ -3,9 +3,9 @@
 A small business goes from "what do I need?" to a working connection in one sitting, on a phone, in its own language.
 Built for the Airtel SYNC case (fictional operator *Accel Business*) by Safal Gupta, B.Tech CSE, VIT Vellore.
 
-- **Everything in one place (GitHub Pages)**: https://alphasafal.github.io/udyam-setu/ (enable Pages: Settings → Pages → Deploy from branch → `main` / `/docs`)
+- **Everything in one place (GitHub Pages)**: https://alphasafal.github.io/udyam-setu/
 - **Live demo, no sign-in**: https://alphasafal.github.io/udyam-setu/live/ · **GenAI demo** (asks the viewer to allow a language model): https://claude.ai/artifact/15HCtChjeL3t5oFPn9SdSB
-- **Demo video**: `docs/Udyam_Setu_Demo.mp4` (under 2 minutes)
+- **Demo video**: `docs/Udyam_Setu_Demo.mp4` (under 3 minutes)
 - **Business case deck**: `docs/Business_Case_Deck.pdf` · **workings**: `docs/business_case.py` → `docs/business_case.md`
 - **Architecture** (each part marked Built / Simulated / Planned): `docs/architecture.png`
 - **Privacy note** (1 page): `docs/Udyam_Setu_Privacy_Note.pdf`
@@ -16,7 +16,7 @@ Built for the Airtel SYNC case (fictional operator *Accel Business*) by Safal Gu
 pip install -r requirements.txt        # needs the tesseract binary too (apt install tesseract-ocr / brew install tesseract)
 export ANTHROPIC_API_KEY=...           # optional: turns on the GenAI advisor (ADVISOR_MODEL defaults to claude-haiku-5-5)
 uvicorn app.main:app --port 8765       # owner journey: http://localhost:8765   back office: /backoffice
-python -m pytest -q                    # 67 tests
+python -m pytest -q                    # 68 tests
 python docs/business_case.py           # regenerates the business case tables
 ```
 
@@ -26,9 +26,9 @@ Without a key everything still runs: the offline parser and reviewed templates t
 
 | Job | Who does it | Guard |
 |---|---|---|
-| Understand what the owner typed (any Indian language, Hinglish, typos) | Claude (`app/llm.py: understand`) | Output must be one of the fixed answer values; anything else is dropped. Phone, e-mail, GSTIN, PAN, Aadhaar and Udyam numbers are redacted before the text leaves the service. The offline parser fills any gaps. |
+| Understand what the owner typed (any Indian language, Hinglish, typos) | Language model (`app/llm.py: understand`) | Output must be one of the fixed answer values; anything else is dropped. Phone, e-mail, GSTIN, PAN, Aadhaar and Udyam numbers are redacted before the text leaves the service. The offline parser fills any gaps. |
 | Choose products, quantities, prices, contract, eligibility | Rule engine (`app/catalogue.py`) | Deterministic; enforces city tier, minimum employees and sites, `requires_gstin`, `requires_one_of`, catalogue price bands. |
-| Explain the recommendation in the owner's language | Claude (`app/llm.py: explain`) | Every price, quantity and day count from the rule engine must appear unchanged, or the reviewed template is shown instead. |
+| Explain the recommendation in the owner's language | Language model (`app/llm.py: explain`) | Every price, quantity and day count from the rule engine must appear unchanged, or the reviewed template is shown instead. |
 
 The client is an interface (`LLMClient`), so Accel could swap in any model, including one hosted in India.
 
@@ -59,22 +59,27 @@ The client is an interface (`LLMClient`), so Accel could swap in any model, incl
 | K11 | Electricity bill 257 days old (limit 90) | ask: new bill |
 | K12 | Consistent | pass |
 
-## Tests (67)
+## Tests (68)
 
 Rule engine on every segment · GSTIN checksum on all 3,534 registry records · look-alike repair (and refusal) · the 12 specimens ·
 30 owner descriptions (15 tuned, 15 unseen) routed to the right bundle · GenAI layer with a fake model: invalid values dropped, PII never sent,
-an explanation that changes a price is rejected, model failure falls back offline · regressions for bugs found in review ·
+an explanation that changes a price is rejected, model failure falls back offline · regression tests for every fixed bug ·
 the deck's business-case numbers regenerate exactly from `docs/business_case.py`.
 
 ## Business case (from `docs/business_case.py`, written to `docs/business_case.md`)
 
-- **Price**: what the advisor's rule engine would quote each of the 5,000 leads in the data (chains come out below what they buy today, so no upselling is assumed).
-- **Volume**: a stated share of each fixable leak is recovered and continues at today's downstream conversion; leaks the journey cannot fix are untouched; factories get half the effect.
-- **Churn**: falls to the rate of today's customers who chased at most twice.
-- **Cost**: field team kept as a fixed cost; partner payouts held near today's level; free AirFiber units; digital journey cost; ₹1.2 Cr build; ₹6 L a month to run.
+A 36-month model in which each month's new customers are tracked separately.
 
-Result: conversion 7.4% → 15.2%, all-in cost per activation ₹15,053 → ₹9,481, Year 1 −₹0.21 Cr (build year), Year 2 +₹6.53 Cr, payback month 13.
-Every downside case in the sensitivity table (recovery −25% or halved, price −15%, churn +5 points, margin 45%) still pays back within 18 months.
+- **Price**: what the advisor's rule engine would quote each of the 5,000 leads in the data (chains come out below what they buy today, so no upselling is assumed).
+- **Volume**: a stated share of each fixable leak is recovered and continues at today's downstream conversion; leaks the journey cannot fix are untouched; factories get half the effect. Leads who only wanted a mobile plan are sold just that and counted separately.
+- **Margin**: set per product line (connectivity 60%, communication 50%, security 40%, IoT 35%, cloud 30%).
+- **Churn**: 6-month churn moves toward the rate of today's customers who chased at most twice (an assumption the pilot tests), then 1% a month.
+- **Cost**: field team kept as a fixed cost; partner payouts held near today's level; free AirFiber units; digital journey cost; ₹2.0 Cr build (₹1.2 Cr app, ₹0.8 Cr integration); ₹6 L a month to run.
+
+Result: bundle activation 7.4% → 13.3% (plus about 95 SIM-only sales a quarter); all-in cost per bundle activation ₹15,053 → ₹10,839;
+net −₹0.97 Cr, +₹5.97 Cr, +₹10.76 Cr over three years; payback month 15; 3-year NPV ₹11.95 Cr at 12%.
+Each downside on its own (recovery −25% or halved, prices −15%, churn +5 points, margins −20%) still pays back, by month 29 at worst.
+Recovery halved, prices −15% and churn +5 together do not pay back within three years (NPV −₹5.07 Cr), so the pilot is randomised within each city and gated before any scale spend.
 
 ## Repository layout
 
@@ -88,7 +93,7 @@ app/propensity.py   logistic propensity model trained from smb_leads.csv
 app/orders.py       orders, tracker events, consent ledger, masked audit log (SQLite)
 app/main.py         FastAPI routes; serves web/
 web/                owner journey (mobile web) and back office
-tests/test_all.py   67 tests
+tests/test_all.py   68 tests
 docs/               GitHub Pages site: index.html, live/ (demo), deck, business case, architecture, privacy note, video
 data/               the synthetic pack (catalogue, leads, mock registries, specimen documents)
 ```
