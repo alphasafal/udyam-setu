@@ -255,3 +255,24 @@ def test_summary_install_days_match_selected_items():
     sel = [l["product_id"] for l in out["quote"]["lines"] if l["selected"]]
     assert out["install_days"] == max(catalogue.CATALOGUE[p].install_days for p in sel)
     assert f"about {out['install_days']} days" in out["summary"] and out["quote"]["monthly"] == 3195
+
+
+# ---- the deck's business-case numbers must regenerate from the model ----------
+def test_business_case_matches_deck():
+    import runpy
+    g = runpy.run_path(str(Path(__file__).resolve().parent.parent / "docs" / "business_case.py"), run_name="bc")
+    Y = g["year"](); ss = Y["ss"]
+    assert round(ss["acts"] / 5000, 3) == 0.152
+    assert round(Y["y1_net"] / 1e7, 2) == -0.21 and round(Y["y2_net"] / 1e7, 2) == 6.53 and Y["payback"] == 13
+    allin = (ss["acq"] + g["RUN_PER_MONTH"] * 3) / ss["acts"]
+    assert round(allin) == 9481
+    worst = max(g["year"](**kw)["payback"] for _, kw in g["CASES"])
+    assert worst <= 18
+
+
+def test_chain_add_ons_follow_needs():
+    from app.nlu import parse
+    a = parse("Pharmacy chain 4 stores Hyderabad; GST registered; want POS and whatsapp orders and one dashboard"); a["language"] = "en"
+    out = advisor.advise(a)
+    sel = [l["product_id"] for l in out["quote"]["lines"] if l["selected"]]
+    assert "P10" in sel and "P19" in sel and "P23" not in sel and out["quote"]["monthly"] == 25283

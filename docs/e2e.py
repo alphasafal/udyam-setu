@@ -108,6 +108,6 @@ with sync_playwright() as p:
     page.screenshot(path=OUT / "09_backoffice.png")
     cap(page, "Audit log: every lookup, consent and decision — identifiers masked, actor and reason recorded", 3.5)
     page.evaluate("window.scrollTo(0, document.body.scrollHeight)"); time.sleep(2 if record else 0)
-    card("What changes", ["Lead → activation 7.4% → 13% · lead to live 17.6 days → ≤ 5 for shops and offices · status calls 3 → < 0.5", "Cost per activation ₹15,053 → ₹5,549 · build pays back in about 12 months · ₹7.1 Cr net in year 2", "Claude understands and explains; the rule engine sets every price; KYC holds every inactive GSTIN", "github.com/alphasafal/udyam-setu · 65 tests pass · live demo: claude.ai/artifact/15HCtChjeL3t5oFPn9SdSB"], 7)
+    card("What changes", ["Lead → activation 7.4% → 15% · lead to live 17.6 days → ≤ 5 for shops and offices · status calls 3 → < 0.5", "All-in cost per activation ₹15,053 → ₹9,481 · payback in month 13 · ₹6.5 Cr net in year 2", "GenAI understands and explains; the rule engine sets every price; KYC holds every inactive GSTIN", "alphasafal.github.io/udyam-setu · 67 tests pass · code: github.com/alphasafal/udyam-setu"], 7)
     ctx.close(); b.close()
 print("done", lang)

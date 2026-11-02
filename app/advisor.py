@@ -95,7 +95,7 @@ QUESTIONS = [
     },
 ]
 
-EXTRA_NEED_LABELS = {"simonly": {"en": "Just a mobile line", "hi": "सिर्फ़ मोबाइल लाइन", "mr": "फक्त मोबाइल लाइन"},
+EXTRA_NEED_LABELS = {"central": {"en": "One dashboard for all sites", "hi": "सभी शाखाओं का एक डैशबोर्ड", "mr": "सर्व शाखांसाठी एक डॅशबोर्ड"}, "simonly": {"en": "Just a mobile line", "hi": "सिर्फ़ मोबाइल लाइन", "mr": "फक्त मोबाइल लाइन"},
                      "wifi": {"en": "Wi-Fi for customers", "hi": "ग्राहकों के लिए वाई-फ़ाई", "mr": "ग्राहकांसाठी वाय-फाय"},
                      "security": {"en": "Security / antivirus", "hi": "सुरक्षा / एंटीवायरस", "mr": "सुरक्षा / अँटीव्हायरस"}}
 SEG_BY_TYPE = {"kirana": "micro", "salon": "micro", "clinic": "prof", "chain": "multi", "factory": "mfg"}

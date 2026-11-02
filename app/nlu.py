@@ -31,6 +31,7 @@ NEED_WORDS = {
     "iot": ["machine monitoring", "machines", "sensor", "energy use", "iot", "मशीनों", "मशीन मॉनिटर"],
     "security": ["ransomware", "virus", "antivirus", "firewall", "hack", "security", "सुरक्षा"],
     "wifi": ["guests complain about wifi", "wifi for guests", "customer wifi", "customer wi-fi", "guest wifi", "guest wi-fi", "wifi for customers", "free wifi", "ग्राहक वाई-फ़ाई"],
+    "central": ["one dashboard", "one bill", "single bill", "central", "manage all", "all outlets", "all branches", "single view", "एक बिल", "एक डैशबोर्ड"],
     "simonly": ["ek sim", "sim chahiye", "sim chaahiye", "sirf mobile", "sim card", "एक सिम", "सिम चाहिए", "just a sim", "only a sim", "only sim", "only want a sim", "just want a sim", "just a mobile", "only mobile plan", "mobile plan only", "sirf sim", "bas sim", "सिर्फ़ सिम", "बस सिम"],
 }
 

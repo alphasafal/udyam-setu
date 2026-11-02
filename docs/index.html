@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Udyam Setu · Airtel SYNC submission</title>
+<style>
+  :root { --red:#E40000; --ink:#1c1c1e; --grey:#5b5b60; --line:#dcdce1; --soft:#f4f4f6; --bg:#ffffff; }
+  @media (prefers-color-scheme: dark) { :root { --ink:#f2f2f4; --grey:#a3a3ab; --line:#35353c; --soft:#1f1f23; --bg:#141416; --red:#ff4a4a; } }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif; line-height:1.45; }
+  .wrap { max-width:880px; margin:0 auto; padding:32px 16px 48px; }
+  .eyebrow { color:var(--red); font-weight:700; letter-spacing:.08em; font-size:12px; }
+  h1 { font-size:34px; margin:6px 0 4px; } .sub { color:var(--grey); margin:0 0 24px; max-width:640px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+  a.card { display:block; text-decoration:none; color:inherit; border:1px solid var(--line); border-radius:12px; padding:14px 16px; background:var(--soft); }
+  a.card:hover, a.card:focus-visible { border-color:var(--red); outline:none; }
+  a.card b { display:block; font-size:16px; margin-bottom:2px; } a.card span { color:var(--grey); font-size:13px; }
+  video { width:100%; border-radius:12px; border:1px solid var(--line); margin:24px 0 8px; background:#000; }
+  .facts { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px; margin:24px 0; }
+  .facts div { border-left:3px solid var(--red); padding:4px 10px; } .facts b { font-size:20px; display:block; } .facts span { color:var(--grey); font-size:13px; }
+  footer { color:var(--grey); font-size:12px; margin-top:28px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">AIRTEL SYNC · PROJECT UDYAM DIGITAL · TRACK A</div>
+  <h1>Udyam Setu</h1>
+  <p class="sub">A small business goes from "what do I need?" to a working connection in one sitting, on a phone, in its own language. Submission by Safal Gupta, B.Tech CSE, VIT Vellore.</p>
+
+  <div class="grid">
+    <a class="card" href="live/"><b>Live demo</b><span>The full owner journey and the partner back office, in the browser. No sign-in.</span></a>
+    <a class="card" href="https://claude.ai/artifact/15HCtChjeL3t5oFPn9SdSB"><b>GenAI demo</b><span>The same page, with a language model reading free text in any language (asks you to allow it).</span></a>
+    <a class="card" href="Business_Case_Deck.pdf"><b>Submission deck</b><span>7 pages: diagnosis, segments, journey, Smart KYC, channels, business case.</span></a>
+    <a class="card" href="architecture.png"><b>Architecture</b><span>Every component marked Built, Simulated or Planned.</span></a>
+    <a class="card" href="Udyam_Setu_Privacy_Note.pdf"><b>Privacy note</b><span>One page: DPDP Act 2023 consent, minimisation, retention, processors.</span></a>
+    <a class="card" href="https://github.com/alphasafal/udyam-setu"><b>Code and tests</b><span>FastAPI prototype, 67 tests, business-case model (docs/business_case.py).</span></a>
+  </div>
+
+  <video src="Udyam_Setu_Demo.mp4" controls preload="metadata" playsinline></video>
+  <div style="color:var(--grey);font-size:13px">Demo video, 1 min 49 s.</div>
+
+  <div class="facts">
+    <div><b>7.4% → 15%</b><span>lead to activation</span></div>
+    <div><b>17.6 → ≤ 5 days</b><span>lead to live, shops and offices</span></div>
+    <div><b>₹15,053 → ₹9,481</b><span>all-in cost per activation</span></div>
+    <div><b>Month 13</b><span>payback; ₹6.5 Cr net in year 2</span></div>
+  </div>
+
+  <footer>All businesses, people, identifiers and documents are fictional (Accel YTL Hackathon synthetic pack).</footer>
+</div>
+</body>
+</html>

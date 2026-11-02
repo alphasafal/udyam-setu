@@ -17,7 +17,7 @@
 <h2>2. Consent (DPDP s.5–6): specific, itemised, in the owner's language</h2>
 <ul>
  <li>Notice shown before any upload, in the language the owner chose for the conversation (Hindi, Marathi and English in the prototype). Each purpose is a separate line: <i>identity verification</i>, <i>service activation and the regulatory customer application form</i>, and <i>marketing on WhatsApp</i>. The first two are required to proceed; marketing is unticked by default and can be refused without affecting the order.</li>
- <li>Every consent is written to an <b>append-only consent ledger</b> with purpose list, timestamp, language and the version of the notice shown (<code>2026-10-v1</code>), so we can prove what the owner agreed to. Withdrawal is one tap on the tracker page and is recorded the same way; processing for marketing stops immediately, and verification data follows the retention schedule below.</li>
+ <li>Each consent goes to an <b>append-only ledger</b> (purposes, time, language, notice version <code>2026-10-v1</code>). Withdrawal is one tap on the tracker page; marketing stops at once, verification data follows the retention below.</li>
 </ul>
 
 <h2>3. Data minimisation and what is never stored</h2>
@@ -28,10 +28,10 @@
 <tr><td>PAN, Aadhaar number, bank details</td><td><b>Never stored.</b> OTP-based Aadhaar eSign through a licensed eSign Service Provider returns the signed form; the Aadhaar number does not enter our systems. Payment runs on a UPI autopay mandate token, not account details.</td></tr>
 <tr><td>An existing Accel mobile customer's verified identity</td><td>Reused <b>only for the signatory</b> (the individual) and only with fresh consent. The <b>business</b> is always verified separately through its GSTIN/Udyam record, so one person's mobile KYC is never treated as the business's KYC.</td></tr>
 <tr><td>Phone number</td><td>Masked in all tables except the notification service; used only for OTP, order updates and, if consented, marketing.</td></tr>
-<tr><td>Text sent to the language model</td><td>Phone numbers, e-mail, GSTIN, PAN, Aadhaar and Udyam numbers are redacted before the text leaves our service (tested). The model returns only values from a fixed list, which are validated; it never sees documents and never sets a price. No training on customer conversations.</td></tr></table>
+<tr><td>Text sent to the language model</td><td>Phone, e-mail, GSTIN, PAN, Aadhaar and Udyam numbers redacted first (tested). It returns only values from a fixed list, which are validated; it never sees documents or sets a price.</td></tr></table>
 
 <h2>4. Purpose limitation and sharing</h2>
-<p>Verification data is used for verification and the CAF only, never for propensity scoring (which uses the non-identifying lead profile). Partners see masked identifiers and the pre-filled quote, never document images. No data leaves India; the only third parties are the registries queried for verification and the eSign / DigiLocker providers the owner invokes.</p>
+<p>Verification data is used for verification and the CAF only, never for propensity scoring (which uses the non-identifying lead profile). Partners see masked identifiers and the pre-filled quote, never document images. Customer records, documents and the consent ledger are stored only in India. Every processor is named in the notice with its role: GST and Udyam registry APIs and the eSign / DigiLocker providers (verification); Meta's WhatsApp Business platform (messages and phone number, under its business terms); the language-model provider (redacted text only, no identifiers or documents, no training on it; production runs it in an India region or on a model Accel hosts).</p>
 
 <h2>5. Security controls</h2>
 <ul>

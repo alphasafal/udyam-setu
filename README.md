@@ -3,8 +3,9 @@
 A small business goes from "what do I need?" to a working connection in one sitting, on a phone, in its own language.
 Built for the Airtel SYNC case (fictional operator *Accel Business*) by Safal Gupta, B.Tech CSE, VIT Vellore.
 
-- **Live demo** (runs in the browser; uses Claude when the viewer allows it, otherwise the offline parser): https://claude.ai/artifact/15HCtChjeL3t5oFPn9SdSB
-- **Demo video**: `docs/Udyam_Setu_Demo.mp4` (1 min 49 s)
+- **Everything in one place (GitHub Pages)**: https://alphasafal.github.io/udyam-setu/ (enable Pages: Settings → Pages → Deploy from branch → `main` / `/docs`)
+- **Live demo, no sign-in**: https://alphasafal.github.io/udyam-setu/live/ · **GenAI demo** (asks the viewer to allow a language model): https://claude.ai/artifact/15HCtChjeL3t5oFPn9SdSB
+- **Demo video**: `docs/Udyam_Setu_Demo.mp4` (under 2 minutes)
 - **Business case deck**: `docs/Business_Case_Deck.pdf` · **workings**: `docs/business_case.py` → `docs/business_case.md`
 - **Architecture** (each part marked Built / Simulated / Planned): `docs/architecture.png`
 - **Privacy note** (1 page): `docs/Udyam_Setu_Privacy_Note.pdf`
@@ -15,7 +16,7 @@ Built for the Airtel SYNC case (fictional operator *Accel Business*) by Safal Gu
 pip install -r requirements.txt        # needs the tesseract binary too (apt install tesseract-ocr / brew install tesseract)
 export ANTHROPIC_API_KEY=...           # optional: turns on the GenAI advisor (ADVISOR_MODEL defaults to claude-haiku-5-5)
 uvicorn app.main:app --port 8765       # owner journey: http://localhost:8765   back office: /backoffice
-python -m pytest -q                    # 65 tests
+python -m pytest -q                    # 67 tests
 python docs/business_case.py           # regenerates the business case tables
 ```
 
@@ -58,22 +59,27 @@ The client is an interface (`LLMClient`), so Accel could swap in any model, incl
 | K11 | Electricity bill 257 days old (limit 90) | ask: new bill |
 | K12 | Consistent | pass |
 
-## Tests (65)
+## Tests (67)
 
 Rule engine on every segment · GSTIN checksum on all 3,534 registry records · look-alike repair (and refusal) · the 12 specimens ·
 30 owner descriptions (15 tuned, 15 unseen) routed to the right bundle · GenAI layer with a fake model: invalid values dropped, PII never sent,
-an explanation that changes a price is rejected, model failure falls back offline · regressions for bugs found in review.
+an explanation that changes a price is rejected, model failure falls back offline · regressions for bugs found in review ·
+the deck's business-case numbers regenerate exactly from `docs/business_case.py`.
 
-## Business case (from `docs/business_case.py`)
+## Business case (from `docs/business_case.py`, written to `docs/business_case.md`)
 
-Conversion 7.4% → 13.1% (targets set per segment), cost per activation ₹15,053 → ₹5,549 (field team kept as a fixed cost),
-Year 1 net +₹0.11 Cr after a ₹1.2 Cr build, Year 2 net +₹7.1 Cr, payback around month 12; at 10% conversion payback is month 15.
-Every assumption is a named constant in the script.
+- **Price**: what the advisor's rule engine would quote each of the 5,000 leads in the data (chains come out below what they buy today, so no upselling is assumed).
+- **Volume**: a stated share of each fixable leak is recovered and continues at today's downstream conversion; leaks the journey cannot fix are untouched; factories get half the effect.
+- **Churn**: falls to the rate of today's customers who chased at most twice.
+- **Cost**: field team kept as a fixed cost; partner payouts held near today's level; free AirFiber units; digital journey cost; ₹1.2 Cr build; ₹6 L a month to run.
+
+Result: conversion 7.4% → 15.2%, all-in cost per activation ₹15,053 → ₹9,481, Year 1 −₹0.21 Cr (build year), Year 2 +₹6.53 Cr, payback month 13.
+Every downside case in the sensitivity table (recovery −25% or halved, price −15%, churn +5 points, margin 45%) still pays back within 18 months.
 
 ## Repository layout
 
 ```
-app/catalogue.py    catalogue, rule engine, bundle templates
+app/catalogue.py    catalogue, rule engine, bundle templates (chain add-ons follow the owner's needs)
 app/advisor.py      question flow, languages, GenAI-first understanding and explanation
 app/llm.py          model client interface, PII redaction, output validation
 app/nlu.py          offline free-text parser (fallback and gap-filler)
@@ -82,8 +88,8 @@ app/propensity.py   logistic propensity model trained from smb_leads.csv
 app/orders.py       orders, tracker events, consent ledger, masked audit log (SQLite)
 app/main.py         FastAPI routes; serves web/
 web/                owner journey (mobile web) and back office
-tests/test_all.py   65 tests
-docs/               deck, business case, architecture, privacy note, demo script and video, live-demo build
+tests/test_all.py   67 tests
+docs/               GitHub Pages site: index.html, live/ (demo), deck, business case, architecture, privacy note, video
 data/               the synthetic pack (catalogue, leads, mock registries, specimen documents)
 ```
 
