@@ -1,60 +1,62 @@
 <!doctype html><html><head><meta charset="utf-8"><title>Udyam Setu architecture</title>
 <style>
  body{margin:0;background:#fff;font-family:Helvetica,Arial,sans-serif;color:#1c1c1e}
- .wrap{width:1600px;padding:36px 40px;box-sizing:border-box}
- h1{font-size:26px;margin:0 0 4px} .sub{color:#5b5b60;font-size:14px;margin:0 0 22px}
+ .wrap{width:1600px;padding:34px 40px;box-sizing:border-box}
+ h1{font-size:26px;margin:0 0 4px} .sub{color:#5b5b60;font-size:14px;margin:0 0 18px;max-width:1450px}
  .layer{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:stretch;margin-bottom:10px}
  .lab{font-size:12px;font-weight:700;color:#5b5b60;letter-spacing:.06em;padding-top:12px}
  .row{display:grid;gap:12px}
- .box{border:1px solid #d9d9de;border-radius:10px;padding:10px 12px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.06)}
- .box b{display:block;font-size:14px;margin-bottom:4px} .box span{font-size:11.5px;color:#2b2b30;line-height:1.35}
- .chan{background:#fdecec;border-color:#f3c2c2} .rule{background:#1c1c1e;color:#fff;border-color:#1c1c1e} .rule span{color:#e6e6e6}
- .ext{background:#fff8e6;border-color:#f0d08a} .data{background:#f3f3f5;border-color:#c8c8ce}
- .arrows{display:grid;grid-template-columns:150px 1fr;gap:14px;height:26px;margin:-4px 0 2px}
+ .box{border:1px solid #d9d9de;border-radius:10px;padding:10px 12px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.06);position:relative}
+ .box b{display:block;font-size:14px;margin-bottom:4px;padding-right:70px} .box span{font-size:11.5px;color:#2b2b30;line-height:1.35;display:block}
+ .rule{background:#1c1c1e;color:#fff;border-color:#1c1c1e} .rule span{color:#e6e6e6}
+ .st{position:absolute;top:9px;right:10px;font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;border-radius:5px}
+ .built{background:#e6f4ec;color:#1b8a4c} .sim{background:#fff3e0;color:#b86a00} .plan{background:#efeff2;color:#6b6b72}
+ .rule .built{background:#1b8a4c;color:#fff}
+ .arrows{display:grid;grid-template-columns:150px 1fr;gap:14px;height:24px;margin:-4px 0 2px}
  .arrows div{position:relative} .arrows div::before{content:"";position:absolute;left:50%;top:2px;width:0;height:0;border:9px solid transparent;border-top:12px solid #c8c8ce}
  .arrows .line::after{content:"";position:absolute;left:5%;right:5%;top:0;border-top:2px solid #c8c8ce}
- .flow{margin-top:18px;border-left:4px solid #E40000;padding:10px 14px;background:#fafafa;font-size:13px;line-height:1.5}
- .legend{display:flex;gap:18px;font-size:12px;color:#5b5b60;margin-top:12px} .legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:5px;border:1px solid #d9d9de}
+ .flow{margin-top:16px;border-left:4px solid #E40000;padding:10px 14px;background:#fafafa;font-size:13px;line-height:1.5}
+ .legend{display:flex;gap:18px;font-size:12px;color:#5b5b60;margin-top:12px;align-items:center}
 </style></head><body><div class="wrap">
-<h1>Udyam Setu — solution architecture</h1>
-<p class="sub">The model talks, the rule engine decides, the registries confirm. Prototype: Next.js/HTML PWA + WhatsApp Cloud API front ends, FastAPI services, SQLite/Postgres, a hosted LLM behind a guardrail layer, Bhashini-class ASR/TTS. All data in India.</p>
+<h1>Udyam Setu: solution architecture</h1>
+<p class="sub">The model talks, the rule engine decides, the registries confirm. Each box is marked <b>Built</b> (running in the prototype repo, covered by tests), <b>Simulated</b> (working in the prototype against mock data or a stub) or <b>Planned</b> (production design, not built). Prototype stack: FastAPI, a mobile web app (PWA), SQLite, Tesseract + OpenCV, scikit-learn, Claude via an API behind a validation layer. Production target: WhatsApp Cloud API, Postgres, Bhashini ASR/TTS, all in an India region.</p>
 
 <div class="layer"><div class="lab">CHANNELS</div><div class="row" style="grid-template-columns:repeat(5,1fr)">
- <div class="box chan"><b>WhatsApp Business</b><span>Cloud API · text + voice notes · rich quote cards · tracker updates</span></div>
- <div class="box chan"><b>Web / PWA</b><span>Works on a ₹8k phone; session continues from WhatsApp via link</span></div>
- <div class="box chan"><b>Voice line (IVR)</b><span>ASR + TTS in 10 languages; call-back when confidence is low</span></div>
- <div class="box chan"><b>Partner & sales app</b><span>Assist queue, pre-filled quote, install slot, commission view</span></div>
- <div class="box"><b>API gateway</b><span>OTP auth, rate limits, consent token checked on every call</span></div>
+ <div class="box"><i class="st built">BUILT</i><b>Mobile web app (PWA)</b><span>Full journey in English, Hindi, Marathi; works on a basic smartphone</span></div>
+ <div class="box"><i class="st sim">SIMULATED</i><b>WhatsApp Business</b><span>Status messages generated and previewed in the tracker; sending via Cloud API is planned</span></div>
+ <div class="box"><i class="st plan">PLANNED</i><b>Voice line (IVR)</b><span>ASR + TTS in 10 languages; call-back when confidence is low</span></div>
+ <div class="box"><i class="st built">BUILT</i><b>Partner & sales back office</b><span>Assist queue ranked by propensity, live orders, masked audit log</span></div>
+ <div class="box"><i class="st plan">PLANNED</i><b>API gateway</b><span>OTP auth, rate limits, consent token checked on every call</span></div>
 </div></div>
 <div class="arrows"><div></div><div class="line"></div></div>
 
 <div class="layer"><div class="lab">EXPERIENCE SERVICES</div><div class="row" style="grid-template-columns:1.4fr 1.3fr 1fr .9fr .9fr">
- <div class="box"><b>Saathi advisor service</b><span>LLM orchestrator with retrieval over catalogue + FAQs. Outputs a structured <i>needs profile</i>, never a price. Guardrails: no product outside the catalogue, no promise outside policy, PII redacted before the model sees text. Works without the LLM (deterministic question flow).</span></div>
- <div class="box rule"><b>Bundle rule engine</b><span>Deterministic: city tier, min employees/sites, requires_gstin, requires_one_of, price bands, install days. Returns eligible products + the reasons the advisor turns into plain language.</span></div>
- <div class="box"><b>Quote & checkout</b><span>Live price with toggles, setup fees, contract; UPI autopay mandate; one-tap accept; shareable quote</span></div>
- <div class="box"><b>Language layer</b><span>Bhashini / Indic ASR-TTS; translation memory of reviewed phrases per language</span></div>
- <div class="box"><b>Propensity scorer</b><span>Logistic model on lead profile (AUC 0.71); routes stalled leads to partners</span></div>
+ <div class="box"><i class="st built">BUILT</i><b>Saathi advisor (GenAI)</b><span>Claude understands free text in any Indian language and explains the bundle in the owner's language. Every output is validated: values outside the allowed options are dropped; an explanation whose prices differ from the quote is discarded. PII redacted before the model. Offline parser + reviewed templates as fallback.</span></div>
+ <div class="box rule"><i class="st built">BUILT</i><b>Bundle rule engine</b><span>Deterministic: city tier, min employees/sites, requires_gstin, requires_one_of, price bands, install days. Owns every product, price and eligibility decision.</span></div>
+ <div class="box"><i class="st built">BUILT</i><b>Quote & checkout</b><span>Live price with add-on toggles, setup fee, contract term; dependencies re-checked on each toggle. UPI autopay mandate planned.</span></div>
+ <div class="box"><i class="st built">BUILT</i><b>Language layer</b><span>Reviewed phrase bank (3 languages); Bhashini ASR/TTS for 10 languages planned</span></div>
+ <div class="box"><i class="st built">BUILT</i><b>Propensity scorer</b><span>Logistic regression on 13 lead fields, 5-fold CV AUC 0.71; routes stalled leads</span></div>
 </div></div>
 <div class="arrows"><div></div><div class="line"></div></div>
 
 <div class="layer"><div class="lab">VERIFICATION & ORDER</div><div class="row" style="grid-template-columns:1.3fr 1fr 1fr 1fr 1fr">
- <div class="box"><b>KYC service</b><span>Capture quality (blur/skew) → OCR → look-alike repair tested against the GSTIN checksum → registry match → name/address/signatory checks → decision with reasons</span></div>
- <div class="box ext"><b>Registry adapters</b><span>GSTIN lookup (status, legal name, address), Udyam lookup. Mocked from the CSVs in the prototype; GSTN / Udyam APIs in production</span></div>
- <div class="box ext"><b>DigiLocker + e-sign</b><span>Fetch GST/Udyam certificates with consent; Aadhaar e-sign of the CAF returns a signed hash only</span></div>
- <div class="box"><b>Order orchestration</b><span>Provisioning, SIM dispatch, engineer slotting, failover-first install option</span></div>
- <div class="box"><b>Tracker & notifier</b><span>Event-driven status; WhatsApp + SMS templates; owner picks the slot; withdraw consent from the same page</span></div>
+ <div class="box"><i class="st built">BUILT</i><b>Smart KYC service</b><span>Blur/skew check → OCR → look-alike repair accepted only if the GSTIN checksum passes and the registry has the record → name, address-age and signatory checks → pass / ask / hold with reasons</span></div>
+ <div class="box"><i class="st sim">SIMULATED</i><b>Registry adapters</b><span>GSTIN and Udyam lookups served from the mock registries (3,534 + 2,723 records); GSP / Udyam APIs in production</span></div>
+ <div class="box"><i class="st plan">PLANNED</i><b>DigiLocker + Aadhaar eSign</b><span>Fetch certificates with consent; OTP-based eSign of the CAF via a licensed ESP</span></div>
+ <div class="box"><i class="st sim">SIMULATED</i><b>Order orchestration</b><span>Order states and install slot in SQLite; provisioning, SIM dispatch and engineer systems are stubs</span></div>
+ <div class="box"><i class="st built">BUILT</i><b>Tracker</b><span>Status, ETA from catalogue install days, slot picker, consent withdrawal, document purge date</span></div>
 </div></div>
 <div class="arrows"><div></div><div class="line"></div></div>
 
 <div class="layer"><div class="lab">DATA, TRUST & OPS<br><small style="font-weight:400">India region</small></div><div class="row" style="grid-template-columns:repeat(5,1fr)">
- <div class="box data"><b>Customer & order store</b><span>Postgres, field-level encryption</span></div>
- <div class="box data"><b>Document vault</b><span>Object store, 30-day TTL (7 days if rejected), every access logged with a reason</span></div>
- <div class="box data"><b>Consent ledger</b><span>Append-only: purpose, timestamp, notice version, language, withdrawal</span></div>
- <div class="box data"><b>Audit & masking</b><span>Masked identifiers in every log and UI; alerts on bulk reads</span></div>
- <div class="box data"><b>Analytics & back office</b><span>Funnel, leak reasons, partner performance, model evaluation set</span></div>
+ <div class="box"><i class="st built">BUILT</i><b>Customer & order store</b><span>SQLite in the prototype; Postgres with field-level encryption planned</span></div>
+ <div class="box"><i class="st sim">SIMULATED</i><b>Document vault</b><span>Prototype deletes images right after extraction; production: encrypted store, access logged with a reason</span></div>
+ <div class="box"><i class="st built">BUILT</i><b>Consent ledger</b><span>Purpose list, timestamp, notice version, language, withdrawal</span></div>
+ <div class="box"><i class="st built">BUILT</i><b>Audit & masking</b><span>Every lookup, consent and decision logged with actor and reason; identifiers masked</span></div>
+ <div class="box"><i class="st plan">PLANNED</i><b>Analytics</b><span>Funnel and leak dashboard, partner performance, weekly advisor evaluation set</span></div>
 </div></div>
 
-<div class="flow"><b>Main flow:</b> owner → channel → Saathi (needs profile) → rule engine (eligible bundle) → quote → consent → KYC (lookup first, documents only if needed) → e-sign → order → tracker.<br>
-<b>Side flows:</b> stalled or high-value leads → propensity scorer → partner app · every PII touch → consent ledger + masked audit · installation events → WhatsApp notifier.</div>
-<div class="legend"><span><i style="background:#fdecec"></i>Channel</span><span><i style="background:#1c1c1e"></i>Deterministic rules (owns price & eligibility)</span><span><i style="background:#fff8e6"></i>External / government API</span><span><i style="background:#f3f3f5"></i>Data store</span></div>
+<div class="flow"><b>Main flow:</b> owner → app → Saathi (needs profile) → rule engine (eligible bundle and price) → quote → consent → KYC (lookup first, documents only if needed) → eSign → order → tracker.<br>
+<b>Side flows:</b> stalled or high-propensity leads → partner back office · every personal-data touch → consent ledger + masked audit · order events → WhatsApp notifier.</div>
+<div class="legend"><span class="st built" style="position:static">BUILT</span> running in the repo, tested · <span class="st sim" style="position:static">SIMULATED</span> works against mock data or a stub · <span class="st plan" style="position:static">PLANNED</span> production design</div>
 </div></body></html>

@@ -40,6 +40,7 @@ def advise(a: Answers):
     ans = dict(a.answers)
     if a.free_text:
         parsed = advisor.parse_free_text(a.free_text, a.language) or {}
+        parsed.pop("_source", None)
         for k, v in parsed.items():
             ans.setdefault(k, v)
     ans["language"] = a.language
@@ -58,6 +59,8 @@ def parse_text(f: FreeText):
     """Free text → partial answers. Offline NLU, or the LLM when a key is set (same schema)."""
     ans = advisor.parse_free_text(f.text, f.language) or {}
     labels = {q["id"]: {o["v"]: o.get(f.language, o["en"]) for o in q["options"]} for q in advisor.QUESTIONS}
+    for k, v in advisor.EXTRA_NEED_LABELS.items():
+        labels["needs"][k] = v.get(f.language, v["en"])
     understood = []
     for k, v in ans.items():
         if k in labels:
@@ -65,7 +68,8 @@ def parse_text(f: FreeText):
             understood += [labels[k].get(str(x), str(x)) for x in vals]
         elif k == "city":
             understood.append(str(v))
-    return {"answers": ans, "understood": understood, "llm_used": advisor.llm_available()}
+    source = ans.pop("_source", "offline")
+    return {"answers": ans, "understood": understood, "source": source, "llm_used": advisor.llm_available()}
 
 
 class Reprice(BaseModel):

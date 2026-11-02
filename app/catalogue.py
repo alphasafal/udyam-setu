@@ -146,8 +146,9 @@ def recommend(profile: Profile) -> dict:
     elif seg == "prof":
         name = "Clinic & Office"
         users = max(2, min(profile.employees, 25))
-        items.append(_li("P02", why="300 Mbps business fibre with optional static IP"))
-        items.append(_li("P09", why="4G/5G failover so the clinic never loses billing or appointments"))
+        s = max(profile.sites, 1)
+        items.append(_li("P02", qty=s, why="300 Mbps business fibre with optional static IP" + (f", at each of {s} locations" if s > 1 else "")))
+        items.append(_li("P09", qty=s, why="4G/5G failover so the clinic never loses billing or appointments"))
         items.append(_li("P16", qty=users, why=f"Business email on your own domain for {users} people, with documents and video meetings"))
         items.append(_li("P20", qty=users, why=f"Antivirus and ransomware protection for {users} devices"))
         items.append(_li("P17", why="Automatic 1 TB backup of PCs and phones"))
@@ -176,6 +177,7 @@ def recommend(profile: Profile) -> dict:
         items.append(_li("P21", why="Managed firewall watched by the Accel SOC"))
         items.append(_li("P24", qty=10, optional=True, selected="iot" in n, why="IoT sensors for machine uptime and energy"))
         items.append(_li("P16", qty=10, why="Email and office suite for the office staff"))
+        items.append(_li("P08", qty=2, why="Two business lines with 150 GB and roaming for the owner and plant manager"))
         items.append(_li("P25", qty=2, optional=True, selected="fleet" in n, why="GPS trackers on delivery vehicles"))
         items.append(_li("P20", qty=10, optional=True, selected="security" in n, why="Antivirus and ransomware protection for office PCs"))
         items.append(_li("P17", optional=True, selected="email" in n or "security" in n, why="Automatic 1 TB backup"))
@@ -190,7 +192,7 @@ def recommend(profile: Profile) -> dict:
         else:
             kept.append(li)
     return {"bundle_name": name, "contract_months": term, "items": kept, "removed": removed,
-            "install_days": max([li.product.install_days for li in kept] or [0])}
+            "install_days": max([li.product.install_days for li in kept if li.selected] or [0])}
 
 
 def price_bundle(items: List[LineItem], selected: Optional[Dict[str, bool]] = None) -> dict:

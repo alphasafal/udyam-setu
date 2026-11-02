@@ -46,7 +46,7 @@ input[type=text],textarea{width:100%;border:1.5px solid var(--line);border-radiu
 .scorer input{width:100%}
 </style>
 
-<div class="top"><div class="brand">Accel <span>Business</span> · Udyam Setu — live demo</div>
+<div class="top"><div class="brand">Accel <span>Business</span> · Udyam Setu · live demo</div>
  <div class="tabs"><button id="tabJ" class="on">Owner journey</button><button id="tabB">Back office</button></div></div>
 
 <div id="journey">
@@ -95,18 +95,20 @@ const TYPEW = {factory:["factory","manufactur","plant","mill","workshop","foundr
  clinic:["clinic","doctor","dental","dentist","physio","diagnostic","lab ","pathology","hospital","ca firm","chartered","accountant","coaching","tuition","institute","office","lawyer","law office","advocate","architect","consultan","insurance","real estate","agency","studio","क्लिनिक","कोचिंग","दफ़्तर","ऑफ़िस","ऑफिस","डॉक्टर"],
  salon:["salon","parlour","parlor","restaurant","cafe","café","bakery","dhaba","sweet shop","mithai","hotel","eatery","canteen","सैलून","रेस्टोरेंट","होटल","ढाबा","बेकरी"],
  kirana:["shop","kirana","store","pharmacy","medical","chemist","boutique","stationery","hardware","mobile repair","optician","grocery","general store","dukaan","dukan","दुकान","किराना","मेडिकल","फ़ार्मेसी"]};
-const NEEDW = {billing:["bill","billing","upi","pos","inventory","stock","invoice","बिलिंग","बिल ","स्टॉक"],customers:["whatsapp","customer","offer","promotion","sms","marketing","catalogue","catalog","orders on","ग्राहक","ऑफ़र"],cctv:["cctv","camera","surveillance","कैमरा","सीसीटीवी"],email:["email","e-mail","domain","backup","google workspace","office 365","ईमेल","बैकअप"],phone:["ivr","phone line","landline","call recording","toll free","toll-free","1800","receptionist","calls","टोल"],uptime:["never go down","goes down","keeps dropping","downtime","uptime","backup internet","failover","reliable","बंद हो","नेट नहीं"],website:["website","web site","online presence","वेबसाइट"],iot:["machine monitoring","machines","sensor","energy use","iot","मशीनों","मशीन मॉनिटर"],security:["ransomware","virus","antivirus","firewall","hack","security","सुरक्षा"],wifi:["customer wifi","customer wi-fi","guest wifi","guest wi-fi","wifi for customers","free wifi"],simonly:["just a sim","only a sim","only sim","only want a sim","just want a sim","just a mobile","only mobile plan","mobile plan only","sirf sim","bas sim","सिर्फ़ सिम","बस सिम"]};
-const NUMW = {one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,twelve:12,fifteen:15,twenty:20,thirty:30,forty:40,fifty:50,ek:1,do:2,teen:3,char:4,paanch:5,panch:5,das:10,bees:20,pachas:50};
+const NEEDW = {billing:["bill","billing","upi","pos","inventory","stock","invoice","बिलिंग","बिल ","स्टॉक"],customers:["whatsapp","customer","offer","promotion","sms","marketing","catalogue","catalog","orders on","ग्राहक","ऑफ़र"],cctv:["cctv","camera","surveillance","कैमरा","सीसीटीवी"],email:["email","e-mail","domain","backup","google workspace","office 365","ईमेल","बैकअप"],phone:["ivr","phone line","landline","call recording","toll free","toll-free","1800","receptionist","calls","टोल"],uptime:["huge files","large files","video calls drop","fast net","fast internet","never go down","goes down","keeps dropping","downtime","uptime","backup internet","failover","reliable","बंद हो","नेट नहीं"],website:["website","web site","online presence","वेबसाइट"],iot:["machine monitoring","machines","sensor","energy use","iot","मशीनों","मशीन मॉनिटर"],security:["ransomware","virus","antivirus","firewall","hack","security","सुरक्षा"],wifi:["guests complain about wifi","wifi for guests","customer wifi","customer wi-fi","guest wifi","guest wi-fi","wifi for customers","free wifi"],simonly:["ek sim","sim chahiye","sim chaahiye","sirf mobile","sim card","एक सिम","सिम चाहिए","just a sim","only a sim","only sim","only want a sim","just want a sim","just a mobile","only mobile plan","mobile plan only","sirf sim","bas sim","सिर्फ़ सिम","बस सिम"]};
+const NUMW = {a:1,an:1,single:1,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,twelve:12,fifteen:15,twenty:20,thirty:30,forty:40,fifty:50,ek:1,do:2,teen:3,char:4,paanch:5,panch:5,das:10,bees:20,pachas:50};
 const num = s => /^\d+$/.test(s) ? +s : (NUMW[s] ?? null);
 function parse(text){
   const t = " " + text.toLowerCase().replace(/\n/g," ") + " "; const a = {};
   let best = null; for (const [k, ws] of Object.entries(TYPEW)) for (const w of ws){ const i = t.indexOf(w); if (i >= 0 && (best === null || i < best[0])) best = [i,k]; }
   if (best) a.business_type = best[1];
-  let m = t.match(/(\d+|[a-z]+)\s*(?:people|person|staff|employees|workers|team members|members|teachers|doctors|log|karmchari|कर्मचारी|लोग)/); const emp = m ? num(m[1]) : null;
-  let m2 = t.match(/(\d+|[a-z]+)\s*(?:stores|outlets|branches|shops|locations|sites|clinics|centres|centers|restaurants|units|offices|dukaan|dukanein|शाखा|आउटलेट|दुकानें)/); const sites = m2 ? num(m2[1]) : null;
+  let m = t.match(/(\d+|[a-z]+)\s*(?:people|person|staff|employees|workers|team members|members|teachers|doctors|designers|nurses|log|karmchari|कर्मचारी|लोग)/); const emp = m ? num(m[1]) : null;
+  const SW = "(?:stores|outlets|branches|shops|locations|sites|clinics|centres|centers|restaurants|units|offices|properties|hotels|dukaan|dukanein|शाखा|आउटलेट|दुकानें)\\b";
+  let sites = null;
+  for (const pat of ["(?=(\\d+|[a-z]+)\\s+" + SW + ")", "(?=(\\d+|[a-z]+)\\s+[a-z]+\\s+" + SW + ")"]) { for (const m of t.matchAll(new RegExp(pat, "g"))) { const v = num(m[1]); if (v) { sites = v; break; } } if (sites) break; }
   if (sites && sites >= 2 && [undefined,"kirana","salon","clinic"].includes(a.business_type)) a.business_type = (a.business_type !== "clinic" || sites >= 3) ? "chain" : a.business_type;
   if (emp !== null || sites !== null){ const e = emp || ([undefined,"kirana","salon"].includes(a.business_type) ? 3 : 12); const band = e <= 5 ? "1-5" : (e <= 25 ? "6-25" : "26-100"); a.employees = band + "|" + (sites || 1); }
-  if (/hotspot|phone data|mobile data|phone ka net|फ़ोन का|हॉटस्पॉट/.test(t)) a.current_internet = "hotspot"; else if (/leased line|lease line|dedicated line|लीज़्ड/.test(t)) a.current_internet = "leased"; else if (/home broadband|home wifi|ghar ka|घर वाला|home connection/.test(t)) a.current_internet = "home"; else if (/broadband|wifi|wi-fi|fibre|fiber|local isp|cable net|airtel|jio|bsnl|act /.test(t)) a.current_internet = "business"; else if (/no internet|nothing yet|koi net nahi|कोई इंटरनेट नहीं/.test(t)) a.current_internet = "none";
+  if (/hotspot|phone data|mobile data|phone ka net|from my (?:jio |airtel |vi )?phone|(?:jio|airtel|vi) phone|on my phone|phone se|फ़ोन का|फ़ोन से|हॉटस्पॉट/.test(t)) a.current_internet = "hotspot"; else if (/leased line|lease line|dedicated line|लीज़्ड/.test(t)) a.current_internet = "leased"; else if (/home broadband|home wifi|ghar ka|घर वाला|home connection/.test(t)) a.current_internet = "home"; else if (/broadband|wifi|wi-fi|fibre|fiber|local isp|cable net|airtel|jio|bsnl|act /.test(t)) a.current_internet = "business"; else if (/no internet|nothing yet|koi net nahi|कोई इंटरनेट नहीं/.test(t)) a.current_internet = "none";
   const needs = Object.entries(NEEDW).filter(([k,ws]) => ws.some(w => t.includes(w))).map(([k]) => k); if (needs.length) a.needs = needs;
   if (/no gst|without gst|gst nahi|don't have gst|dont have gst|not registered|no gstin|जीएसटी नहीं/.test(t)) a.has_gstin = "no"; else if (/\bgst\b|gstin|gst registered|gst number|जीएसटी/.test(t)) a.has_gstin = "yes";
   for (const [c, tier] of Object.entries(CITY)) if (new RegExp("\\b" + c + "\\b").test(t)) { a.city_tier = String(tier); a.city = c.replace(/\b\w/g, x => x.toUpperCase()); break; }
@@ -140,7 +142,7 @@ function recommend(p){ const n = new Set(p.needs); const items = []; let name = 
     items.push(li("P23",2,true,n.has("cctv"),"HD cameras with 30-day cloud recording, viewable on your phone"));
     items.push(li("P18",1,true,n.has("website"),"Domain, 5-page website and SSL")); }
   else if (p.segment === "prof"){ name = "Clinic & Office"; const users = Math.max(2, Math.min(p.employees, 25));
-    items.push(li("P02",1,false,true,"300 Mbps business fibre with optional static IP")); items.push(li("P09",1,false,true,"4G/5G failover so the clinic never loses billing or appointments"));
+    const ns = Math.max(p.sites, 1); items.push(li("P02",ns,false,true,"300 Mbps business fibre with optional static IP" + (ns > 1 ? `, at each of ${ns} locations` : ""))); items.push(li("P09",ns,false,true,"4G/5G failover so the clinic never loses billing or appointments"));
     items.push(li("P16",users,false,true,`Business email on your own domain for ${users} people, with documents and video meetings`)); items.push(li("P20",users,false,true,`Antivirus and ransomware protection for ${users} devices`));
     items.push(li("P17",1,false,true,"Automatic 1 TB backup of PCs and phones")); items.push(li("P08",2,false,true,"Two mobile lines with 150 GB, roaming and priority care"));
     items.push(li("P12",2,true,n.has("phone"),"Cloud phone lines with IVR and call recording")); items.push(li("P11",1,true,n.has("cctv")||n.has("phone"),"Fixed public IP for CCTV or remote access"));
@@ -150,11 +152,11 @@ function recommend(p){ const n = new Set(p.needs); const items = []; let name = 
     items.push(li("P23",2*s,false,true,"Two cloud cameras per site")); items.push(li("P19",s,false,true,"One POS per site, central inventory")); items.push(li("P08",s,false,true,"One manager line per site"));
     items.push(li("P13",1,true,true,"One toll-free number routed to the right outlet")); items.push(li("P15",1,true,n.has("customers"),"WhatsApp channel for orders and offers")); }
   else { name = "Factory Connect (quoted after site survey)"; items.push(li("P05",1,false,true,"Dedicated 20 Mbps leased line with 99.5% SLA")); items.push(li("P21",1,false,true,"Managed firewall watched by the Accel SOC"));
-    items.push(li("P24",10,true,n.has("iot"),"IoT sensors for machine uptime and energy")); items.push(li("P16",10,false,true,"Email and office suite for the office staff")); items.push(li("P25",2,true,n.has("fleet"),"GPS trackers on delivery vehicles"));
+    items.push(li("P24",10,true,n.has("iot"),"IoT sensors for machine uptime and energy")); items.push(li("P16",10,false,true,"Email and office suite for the office staff")); items.push(li("P08",2,false,true,"Two business lines with 150 GB and roaming for the owner and plant manager")); items.push(li("P25",2,true,n.has("fleet"),"GPS trackers on delivery vehicles"));
     items.push(li("P20",10,true,n.has("security"),"Antivirus and ransomware protection for office PCs")); items.push(li("P17",1,true,n.has("email")||n.has("security"),"Automatic 1 TB backup")); }
   const core = items.filter(i => !i.optional).map(i => i.product_id); const kept = [], removed = [];
   for (const it of items){ const e = errors(it.product_id, p, core); if (e.length) removed.push({name:CAT[it.product_id].name, reasons:e}); else kept.push(it); }
-  return {bundle_name:name, contract_months:term, items:kept, removed, install_days: Math.max(0, ...kept.map(i => CAT[i.product_id].install_days))}; }
+  return {bundle_name:name, contract_months:term, items:kept, removed, install_days: Math.max(0, ...kept.filter(i => i.selected).map(i => CAT[i.product_id].install_days))}; }
 function price(items, sel){ let monthly = 0, setup = 0; const lines = [];
   for (const it of items){ const on = sel ? (sel[it.product_id] ?? it.selected) : it.selected; const c = CAT[it.product_id];
     if (it.optional && !on){ lines.push({...it, name:c.name, unit:c.unit, selected:false, setup:c.setup*it.qty}); continue; }
@@ -167,7 +169,7 @@ function advise(ans){ const p = profile(ans); const rec = recommend(p); const q 
   let summary = p.needs.includes("simonly") ? D.sim_summary[lang].replace("{bundle}", rec.bundle_name).replace("{monthly:,}", q.monthly.toLocaleString("en-IN"))
     : D.summary[lang].replace("{btype}", D.btype[p.business_type][lang]).replace("{emp}", p.employees).replace("{sites}", sitesTxt).replace("{bundle}", rec.bundle_name).replace("{n}", n).replace("{monthly:,}", q.monthly.toLocaleString("en-IN")).replace("{days}", rec.install_days);
   const assumptions = []; if (!("has_gstin" in ans)) assumptions.push(({en:"I assumed no GSTIN; say yes to unlock WhatsApp Business, SMS and telephony.",hi:"मैंने मान लिया कि GSTIN नहीं है।",mr:"मी GSTIN नाही असे गृहीत धरले."})[lang]);
-  return {profile:p, bundle_name:rec.bundle_name, contract_months:rec.contract_months, install_days:rec.install_days, removed:rec.removed, items:rec.items, quote:q, summary, assumptions, handoff:p.segment === "mfg", handoff_reason:"Leased lines need a site survey; a specialist will call within one working day with this profile already filled in."}; }
+  return {profile:p, bundle_name:rec.bundle_name, contract_months:rec.contract_months, install_days:rec.install_days, removed:rec.removed, items:rec.items, quote:q, summary, assumptions, handoff:p.segment === "mfg", handoff_reason:"Leased lines need a site survey; a specialist will call within one working day with this profile already filled in." + (p.has_gstin ? "" : " A leased line, managed firewall and IoT need an active GSTIN, so the specialist will help with GST registration first; until then we can start with business mobile lines and email.")}; }
 
 /* ---------------- GSTIN validator (same as app/kyc.py) ---------------- */
 const CP = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -190,7 +192,7 @@ const Q = () => D.questions.map(q => ({id:q.id, multi:!!q.multi, text:q.text[S.l
 $("#lang").onchange = e => { S.lang = e.target.value; if (S.advice) renderQuote(); else renderAdvisor(); };
 function renderAdvisor(){ step(0); const qs = Q(); const q = qs[S.qi];
   let h = `<h2>${t("advisor")}</h2><p class="sub">${t("hello")}</p>`;
-  if (S.freeText) h += `<div class="bubble me">${esc(S.freeText)}</div><div class="bubble">${t("understood")}: <b>${S.understood.map(esc).join(" · ") || "—"}</b></div>`;
+  if (S.freeText) h += `<div class="bubble me">${esc(S.freeText)}</div><div class="bubble">${t("understood")}: <b>${S.understood.map(esc).join(" · ") || "—"}</b><div class="muted" style="margin-top:4px">${S.source === "genai" ? "✦ Understood by Claude (GenAI); every value checked against the allowed options" : "Understood by the offline parser (GenAI unavailable in this view)"}</div></div>`;
   for (let i = 0; i < S.qi; i++){ const qq = qs[i]; if (!S.asked.has(qq.id)) continue; const a = S.answers[qq.id]; const lab = (Array.isArray(a)?a:[a]).map(v => (qq.options.find(o => o.v == v) || {label:v}).label).join(", "); h += `<div class="bubble">${qq.text}</div><div class="bubble me">${esc(lab)}</div>`; }
   if (!q){ main.innerHTML = h; return; }
   h += `<div class="bubble">${q.text}</div><div class="chips" id="chips">` + q.options.map(o => `<button class="chip" data-v="${o.v}">${o.label}</button>`).join("") + `</div>`;
@@ -198,17 +200,44 @@ function renderAdvisor(){ step(0); const qs = Q(); const q = qs[S.qi];
   h += `<button class="btn" id="go" ${q.multi ? "" : "disabled"}>${t("next")}</button>`; main.innerHTML = h;
   const sel = new Set(); const free = $("#free"); if (free) free.oninput = () => { $("#go").disabled = !free.value.trim() && sel.size === 0; };
   document.querySelectorAll("#chips .chip").forEach(c => c.onclick = () => { if (q.multi){ c.classList.toggle("sel"); c.classList.contains("sel") ? sel.add(c.dataset.v) : sel.delete(c.dataset.v); } else { document.querySelectorAll("#chips .chip").forEach(x => x.classList.remove("sel")); c.classList.add("sel"); sel.clear(); sel.add(c.dataset.v); $("#go").disabled = false; } });
-  $("#go").onclick = () => { if (free && free.value.trim() && sel.size === 0){ const a = parse(free.value); S.freeText = free.value; Object.assign(S.answers, a);
-      const labels = Object.fromEntries(qs.map(x => [x.id, Object.fromEntries(x.options.map(o => [o.v, o.label]))])); S.understood = []; for (const [k,v] of Object.entries(a)){ if (labels[k]) (Array.isArray(v)?v:[v]).forEach(x => S.understood.push(labels[k][x] || x)); else if (k === "city") S.understood.push(v); }
+  $("#go").onclick = async () => { if (free && free.value.trim() && sel.size === 0){ $("#go").disabled = true; $("#go").textContent = "Saathi is reading…";
+      const offline = parse(free.value); const ai = await aiUnderstand(free.value); const a = Object.assign({}, offline, ai.answers);
+      if (offline.needs && ai.answers.needs) a.needs = [...new Set([...ai.answers.needs, ...offline.needs])];
+      if (a.city && !ai.answers.city_tier){ const tt = CITY[String(a.city).toLowerCase()]; if (tt) a.city_tier = String(tt); }
+      S.source = ai.source; S.freeText = free.value; Object.assign(S.answers, a);
+      const labels = Object.fromEntries(qs.map(x => [x.id, Object.fromEntries(x.options.map(o => [o.v, o.label]))])); Object.assign(labels.needs, ({en:{simonly:"Just a mobile line",wifi:"Wi-Fi for customers",security:"Security / antivirus"},hi:{simonly:"सिर्फ़ मोबाइल लाइन",wifi:"ग्राहकों के लिए वाई-फ़ाई",security:"सुरक्षा / एंटीवायरस"},mr:{simonly:"फक्त मोबाइल लाइन",wifi:"ग्राहकांसाठी वाय-फाय",security:"सुरक्षा / अँटीव्हायरस"}})[S.lang]); S.understood = []; for (const [k,v] of Object.entries(a)){ if (labels[k]) (Array.isArray(v)?v:[v]).forEach(x => S.understood.push(labels[k][x] || x)); else if (k === "city") S.understood.push(v); }
       S.qi = 0; return skip(); }
     S.answers[q.id] = q.multi ? [...sel] : [...sel][0]; S.asked.add(q.id); S.qi++; skip(); }; }
-function skip(){ const qs = Q(); while (qs[S.qi] && S.answers[qs[S.qi].id] !== undefined) S.qi++; if (S.qi >= qs.length){ S.advice = advise(S.answers); S.selected = {}; S.advice.quote.lines.forEach(l => S.selected[l.product_id] = l.selected); return renderQuote(); } renderAdvisor(); }
+function skip(){ const qs = Q(); const known = id => S.answers[id] !== undefined || (id === "current_internet" && (S.answers.needs || []).includes("simonly")); while (qs[S.qi] && known(qs[S.qi].id)) S.qi++; if (S.qi >= qs.length){ S.advice = advise(S.answers); S.selected = {}; S.advice.quote.lines.forEach(l => S.selected[l.product_id] = l.selected); return renderQuote(); } renderAdvisor(); }
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------------- GenAI (Claude via the viewer's account; validated, with offline fallback) ---------------- */
+let SAMPLE = null; (async () => { try { SAMPLE = window.claude ? await window.claude.use("sample") : null; } catch (e) { SAMPLE = null; } })();
+const SCHEMA = () => Object.fromEntries(D.questions.map(q => [q.id, q.options.map(o => o.v)]));
+const REDACT = [[/\b\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]\b/gi,"[GSTIN]"],[/\bUDYAM-?[A-Z]{2}-?\d{2}-?\d{7}\b/gi,"[UDYAM]"],[/\b[A-Z]{5}\d{4}[A-Z]\b/gi,"[PAN]"],[/\b\d{4}\s?\d{4}\s?\d{4}\b/g,"[AADHAAR]"],[/[\w.+-]+@[\w-]+\.[\w.]+/g,"[EMAIL]"],[/(?:\+?91[\s-]?)?[6-9]\d{9}\b/g,"[PHONE]"]];
+const redact = s => REDACT.reduce((a,[rx,tag]) => a.replace(rx, tag), s);
+function validate(raw){ const sch = SCHEMA(); const out = {}; if (!raw || typeof raw !== "object") return out;
+  for (const [k,v] of Object.entries(raw)){ if (k === "city" && typeof v === "string" && v.length < 40) out.city = v.trim();
+    else if (k === "needs" && Array.isArray(v)){ const ok = v.filter(x => sch.needs.includes(x)); if (ok.length) out.needs = [...new Set(ok)]; }
+    else if (sch[k] && sch[k].includes(String(v))) out[k] = String(v); } return out; }
+async function aiUnderstand(text){ if (!SAMPLE) return {answers:{}, source:"offline"};
+  const prompt = "You help a telecom advisor understand a small Indian business owner. They may write in any Indian language, Hinglish or English. "
+    + "Extract ONLY what they actually said into one JSON object with these keys, using ONLY these allowed values (omit a key they did not mention; never guess):\n"
+    + JSON.stringify(SCHEMA()) + "\n\"needs\" is a list of allowed values. For employees the value encodes people|locations; pick the closest. Also return \"city\" (English name) if one is named. Reply with only the JSON object.\n\nOwner wrote:\n" + redact(text);
+  try { const raw = await SAMPLE.json(prompt, {modelTier:"quick"}); const v = validate(raw); return {answers:v, source: Object.keys(v).length ? "genai" : "offline"}; }
+  catch (e) { return {answers:{}, source:"offline"}; } }
+const nums = s => (s.match(/₹\s?[\d,]+|\b\d+\b/g) || []).map(x => x.replace(/\s/g,""));
+async function aiExplain(a){ if (!SAMPLE) return null; const lang = ({en:"English",hi:"Hindi",mr:"Marathi"})[S.lang];
+  const facts = {bundle:a.bundle_name, monthly_price:inr(a.quote.monthly), setup:inr(a.quote.setup), contract_months:a.contract_months, live_in_days:a.install_days,
+    products:a.quote.lines.filter(l => l.selected).map(l => ({name:l.name, qty:l.qty, why:l.why})), owner_said:S.freeText ? redact(S.freeText) : (S.answers.needs || [])};
+  const prompt = `You are Saathi, a friendly advisor for small businesses in India. In 2-3 short sentences of ${lang}, explain this bundle to the owner and why it fits what they said. Plain words, no product codes. Use ONLY these facts; add no products, discounts, promises or numbers. Copy every price and number exactly as written.\n\nFacts: ${JSON.stringify(facts)}\n\nReference wording: ${a.summary}`;
+  try { const {text} = await SAMPLE(prompt, {modelTier:"quick"}); const have = text.replace(/\s/g,""); return nums(a.summary).every(n => have.includes(n)) ? text : null; } catch (e) { return null; } }
 
 /* ---------------- UI: quote ---------------- */
 function renderQuote(){ step(1); S.advice = advise(S.answers); const a = S.advice; const p = a.profile; const q = price(a.items, S.selected); const ids = q.lines.filter(l => l.selected).map(l => l.product_id);
   const warnings = []; for (const pid of ids) for (const e of errors(pid, p, ids)) warnings.push(e); const days = Math.max(0, ...ids.map(i => CAT[i].install_days));
-  let h = `<h2>${t("quote")} · ${a.bundle_name}</h2><p class="sub">${t("quoteSub")}</p><div class="bubble">${a.summary}</div>`;
+  const key = S.lang + "|" + a.bundle_name + "|" + a.quote.monthly; const ex = S.explain && S.explain.key === key ? S.explain : null;
+  let h = `<h2>${t("quote")} · ${a.bundle_name}</h2><p class="sub">${t("quoteSub")}</p><div class="bubble" id="saathiSays">${ex && ex.text ? esc(ex.text) : a.summary}<div class="muted" style="margin-top:4px" id="explSrc">${ex ? (ex.text ? "✦ Written by Claude; every price and number checked against the quote" : "Reviewed template (Claude's wording did not match the quote, so it was not shown)") : (SAMPLE ? "Saathi is writing this in your words…" : "Reviewed template")}</div></div>`;
   h += `<div class="card"><div class="price">${inr(q.monthly)}<small>${t("perMonth")}</small></div><div class="muted">${inr(q.setup)} ${t("setup")} · ${a.contract_months}-${t("contract")} · ${t("live")} ${days} ${t("days")}</div></div>`;
   for (const l of q.lines) h += `<div class="line">${l.optional ? `<button class="toggle ${l.selected?"on":""}" data-p="${l.product_id}" aria-label="toggle ${l.name}"></button>` : `<span class="tag ok" style="flex:none;margin-top:3px">✓ core</span>`}<div><div class="nm">${l.name}${l.qty>1?" × "+l.qty:""}</div><div class="why">${l.why}</div></div><div class="amt">${inr(l.unit_price*l.qty)}</div></div>`;
   if (warnings.length) h += `<div class="card" style="border-color:var(--warn)"><b>⚠</b> ${warnings.join("<br>")}</div>`;
@@ -218,8 +247,9 @@ function renderQuote(){ step(1); S.advice = advise(S.answers); const a = S.advic
   h += `<p class="muted">✔ ${t("asked")}: ${(S.answers.needs||[]).join(", ") || "—"}</p><button class="btn" id="accept">${t("accept")} · ${inr(q.monthly)}${t("perMonth")}</button><button class="btn ghost" id="restart">${t("again")}</button>`;
   main.innerHTML = h; S.quote = q; S.days = days;
   document.querySelectorAll(".toggle").forEach(tg => tg.onclick = () => { S.selected[tg.dataset.p] = !S.selected[tg.dataset.p]; renderQuote(); });
-  $("#accept").onclick = renderConsent; $("#restart").onclick = restart; }
-function restart(){ Object.assign(S, {qi:0, answers:{}, advice:null, selected:{}, kyc:null, consent:[], order:null, freeText:"", understood:[], asked:new Set()}); renderAdvisor(); }
+  $("#accept").onclick = renderConsent; $("#restart").onclick = restart;
+  if (SAMPLE && !ex){ const aq = Object.assign({}, a, {quote:q}); aiExplain(aq).then(text => { S.explain = {key, text}; if (S.advice && $("#saathiSays")) renderQuote(); }); } }
+function restart(){ Object.assign(S, {explain:null, source:null, qi:0, answers:{}, advice:null, selected:{}, kyc:null, consent:[], order:null, freeText:"", understood:[], asked:new Set()}); renderAdvisor(); }
 
 /* ---------------- UI: consent + KYC ---------------- */
 function renderConsent(){ step(2); main.innerHTML = `<h2>${t("kyc")}</h2><p class="sub">${t("kycSub")}</p><div class="card consent"><b>${t("consentT")}</b>

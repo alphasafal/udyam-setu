@@ -69,7 +69,7 @@ const api = (p, o) => fetch(p, o).then(r => r.json());
 const t = k => T[S.lang][k];
 const inr = n => "₹" + Number(n).toLocaleString("en-IN");
 function step(i){ [0,1,2,3].forEach(j => $("#s"+j).classList.toggle("on", j<=i)); }
-$("#lang").onchange = async e => { S.lang = e.target.value; await loadQ(); S.qi = 0; S.answers = {}; renderAdvisor(); };
+$("#lang").onchange = async e => { S.lang = e.target.value; await loadQ(); if (S.advice) { S.advice = await api("/api/advise",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({answers:S.answers,language:S.lang})}); renderQuote(); } else renderAdvisor(); };
 async function loadQ(){ S.questions = (await api("/api/questions?lang="+S.lang)).questions; }
 
 // ---------- 1. advisor ----------
@@ -104,7 +104,8 @@ function renderAdvisor(){
     S.qi++; skipKnown();
   };
 }
-function skipKnown(){ while (S.questions[S.qi] && S.answers[S.questions[S.qi].id] !== undefined) S.qi++; if (S.qi >= S.questions.length) return getAdvice(); renderAdvisor(); }
+const known = id => S.answers[id] !== undefined || (id === "current_internet" && (S.answers.needs || []).includes("simonly"));
+function skipKnown(){ while (S.questions[S.qi] && known(S.questions[S.qi].id)) S.qi++; if (S.qi >= S.questions.length) return getAdvice(); renderAdvisor(); }
 async function getAdvice(){
   main.innerHTML = `<div class="bubble">…</div>`;
   S.advice = await api("/api/advise",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({answers:S.answers,language:S.lang})});

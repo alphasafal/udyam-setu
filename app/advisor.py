@@ -1,9 +1,10 @@
 """Saathi — the needs-discovery advisor.
 
-Deterministic question flow (works offline, in the judges' room, with no API
-key). If ANTHROPIC_API_KEY is set, free-text answers are parsed by an LLM
-into the same structured profile, and the "why" lines are rewritten in the
-owner's language. The LLM never sees PII and never picks a price.
+GenAI-first: when a model is configured (app/llm.py), Claude understands the
+owner's free text in any language and explains the recommendation in their
+language. The rule engine (app/catalogue.py) always decides products, prices
+and eligibility, and every model output is validated. With no model the same
+flow runs on the offline parser and reviewed templates, so a demo never breaks.
 """
 from __future__ import annotations
 
@@ -94,6 +95,9 @@ QUESTIONS = [
     },
 ]
 
+EXTRA_NEED_LABELS = {"simonly": {"en": "Just a mobile line", "hi": "सिर्फ़ मोबाइल लाइन", "mr": "फक्त मोबाइल लाइन"},
+                     "wifi": {"en": "Wi-Fi for customers", "hi": "ग्राहकों के लिए वाई-फ़ाई", "mr": "ग्राहकांसाठी वाय-फाय"},
+                     "security": {"en": "Security / antivirus", "hi": "सुरक्षा / एंटीवायरस", "mr": "सुरक्षा / अँटीव्हायरस"}}
 SEG_BY_TYPE = {"kirana": "micro", "salon": "micro", "clinic": "prof", "chain": "multi", "factory": "mfg"}
 SIM_SUMMARY = {"en": "You said you only want a mobile line, so that is all I am quoting: {bundle}, ₹{monthly:,} a month, no contract, SIM at your door tomorrow. The add-ons stay switched off unless you tap them.",
                "hi": "आपने कहा सिर्फ़ मोबाइल लाइन चाहिए, तो बस वही: {bundle}, ₹{monthly:,} प्रति माह, कोई अनुबंध नहीं, SIM कल आपके पास। ऐड-ऑन तब तक बंद रहेंगे जब तक आप न चुनें।",
@@ -168,7 +172,12 @@ def advise(answers: Dict[str, object]) -> dict:
         summary = SUMMARY[lang].format(btype=BTYPE[profile.business_type][lang], emp=profile.employees, sites=sites_txt,
                                    bundle=rec["bundle_name"], n=sum(1 for l in quote["lines"] if l["selected"]),
                                        monthly=quote["monthly"], days=rec["install_days"])
-    summary = maybe_llm_polish(summary, lang)
+    facts = {"bundle": rec["bundle_name"], "monthly_price": f"₹{quote['monthly']:,}", "setup": f"₹{quote['setup']:,}",
+             "contract_months": rec["contract_months"], "live_in_days": rec["install_days"],
+             "products": [{"name": l["name"], "qty": l["qty"], "why": l["why"]} for l in quote["lines"] if l["selected"]],
+             "owner_said": profile.needs}
+    ex = _llm.explain(facts, summary, {"en": "English", "hi": "Hindi", "mr": "Marathi"}.get(lang, "English"))
+    summary, summary_source = ex["text"], ex["source"]
     asked_for = [l["product_id"] for l in quote["lines"] if l["selected"]]
     assumptions = []
     if "has_gstin" not in answers:
@@ -176,6 +185,7 @@ def advise(answers: Dict[str, object]) -> dict:
     if "city_tier" not in answers:
         assumptions.append({"en": "I assumed a tier-2 city; some products are tier-1 only.", "hi": "मैंने टियर-2 शहर माना; कुछ प्रोडक्ट सिर्फ़ टियर-1 में हैं।", "mr": "मी टियर-2 शहर गृहीत धरले; काही उत्पादने फक्त टियर-1 मध्ये आहेत."}[lang])
     return {
+        "summary_source": summary_source,
         "assumptions": assumptions,
         "profile": profile.__dict__,
         "bundle_name": rec["bundle_name"],
@@ -186,53 +196,41 @@ def advise(answers: Dict[str, object]) -> dict:
         "summary": summary,
         "covers_needs": asked_for,
         "handoff": profile.segment == "mfg",
-        "handoff_reason": "Leased lines need a site survey; a specialist will call within one working day with this profile already filled in." if profile.segment == "mfg" else "",
+        "handoff_reason": ("Leased lines need a site survey; a specialist will call within one working day with this profile already filled in."
+                           + ("" if profile.has_gstin else " A leased line, managed firewall and IoT need an active GSTIN, so the specialist will help with GST registration first; until then we can start with business mobile lines and email.")) if profile.segment == "mfg" else "",
     }
 
 
-# ---- optional LLM layer ----------------------------------------------------
+# ---- GenAI layer -------------------------------------------------------------
+from . import llm as _llm
+
+
 def llm_available() -> bool:
-    return bool(os.environ.get("ANTHROPIC_API_KEY"))
+    return _llm.get_client() is not None
+
+
+def answer_schema() -> Dict[str, List[str]]:
+    return {q["id"]: [o["v"] for o in q["options"]] for q in QUESTIONS}
 
 
 def parse_free_text(text: str, lang: str = "en") -> Optional[Dict[str, object]]:
-    """Turn a free-text description into question answers. Offline fallback is
-    keyword-based so the demo works without a key."""
-    t = text.lower()
-    if llm_available():
-        try:
-            import anthropic  # type: ignore
-            client = anthropic.Anthropic()
-            schema = {k: [o["v"] for o in q["options"]] for q in QUESTIONS for k in [q["id"]]}
-            msg = client.messages.create(
-                model="claude-sonnet-4-5", max_tokens=300,
-                system="You map a small-business owner's description to a fixed JSON of answers. Output only JSON. "
-                       "Allowed values: " + json.dumps(schema) + ". 'needs' is a list. Never add keys. Do not include names, phone numbers or addresses.",
-                messages=[{"role": "user", "content": re.sub(r"\+?\d[\d\s-]{8,}\d", "[number]", text)}],
-            )
-            return json.loads(msg.content[0].text)
-        except Exception:
-            pass
+    """GenAI understanding first; the offline parser fills anything the model left out
+    (and is the whole answer when no model is configured)."""
     from .nlu import parse
-    ans = parse(text)
-    return ans or None
+    offline = parse(text)
+    ai = _llm.understand(text, answer_schema(), lang)
+    merged = dict(offline)
+    merged.update(ai)                      # model wins where it answered (validated values only)
+    if "needs" in offline and "needs" in ai:
+        merged["needs"] = list(dict.fromkeys(list(ai["needs"]) + list(offline["needs"])))
+    if "city" in merged and "city_tier" not in ai:
+        from .nlu import CITY_TIER
+        t = CITY_TIER.get(str(merged["city"]).lower())
+        if t:
+            merged["city_tier"] = str(t)
+    merged["_source"] = "genai" if ai else "offline"
+    return merged or None
 
 
-def maybe_llm_polish(summary: str, lang: str) -> str:
-    """Rewrite the templated summary more naturally in the owner's language.
-    Hard rule: numbers and product names must survive unchanged."""
-    if not llm_available():
-        return summary
-    try:
-        import anthropic  # type: ignore
-        client = anthropic.Anthropic()
-        nums = re.findall(r"₹[\d,]+|\d+", summary)
-        msg = client.messages.create(
-            model="claude-sonnet-4-5", max_tokens=250,
-            system=f"Rewrite the text in warm, plain {LANGS.get(lang, 'English')} for a small-business owner. Keep every number, price and product name exactly as given. One short paragraph. No new claims.",
-            messages=[{"role": "user", "content": summary}],
-        )
-        out = msg.content[0].text.strip()
-        return out if all(n in out for n in nums) else summary
-    except Exception:
-        return summary
+def maybe_llm_polish(summary: str, lang: str, facts: Optional[dict] = None) -> str:
+    return _llm.explain(facts or {"summary": summary}, summary, {"en": "English", "hi": "Hindi", "mr": "Marathi"}.get(lang, "English"))["text"]

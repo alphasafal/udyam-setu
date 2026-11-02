@@ -26,17 +26,17 @@ NEED_WORDS = {
     "cctv": ["cctv", "camera", "surveillance", "कैमरा", "सीसीटीवी"],
     "email": ["email", "e-mail", "domain", "backup", "google workspace", "office 365", "ईमेल", "बैकअप"],
     "phone": ["ivr", "phone line", "landline", "call recording", "toll free", "toll-free", "1800", "receptionist", "calls", "टोल"],
-    "uptime": ["never go down", "goes down", "keeps dropping", "downtime", "uptime", "backup internet", "failover", "reliable", "patients can't", "बंद हो", "नेट नहीं"],
+    "uptime": ["huge files", "large files", "video calls drop", "fast net", "fast internet", "never go down", "goes down", "keeps dropping", "downtime", "uptime", "backup internet", "failover", "reliable", "patients can't", "बंद हो", "नेट नहीं"],
     "website": ["website", "web site", "online presence", "वेबसाइट"],
     "iot": ["machine monitoring", "machines", "sensor", "energy use", "iot", "मशीनों", "मशीन मॉनिटर"],
     "security": ["ransomware", "virus", "antivirus", "firewall", "hack", "security", "सुरक्षा"],
-    "wifi": ["customer wifi", "customer wi-fi", "guest wifi", "guest wi-fi", "wifi for customers", "free wifi", "ग्राहक वाई-फ़ाई"],
-    "simonly": ["just a sim", "only a sim", "only sim", "only want a sim", "just want a sim", "just a mobile", "only mobile plan", "mobile plan only", "sirf sim", "bas sim", "सिर्फ़ सिम", "बस सिम"],
+    "wifi": ["guests complain about wifi", "wifi for guests", "customer wifi", "customer wi-fi", "guest wifi", "guest wi-fi", "wifi for customers", "free wifi", "ग्राहक वाई-फ़ाई"],
+    "simonly": ["ek sim", "sim chahiye", "sim chaahiye", "sirf mobile", "sim card", "एक सिम", "सिम चाहिए", "just a sim", "only a sim", "only sim", "only want a sim", "just want a sim", "just a mobile", "only mobile plan", "mobile plan only", "sirf sim", "bas sim", "सिर्फ़ सिम", "बस सिम"],
 }
 
 
 def _num(s: str) -> Optional[int]:
-    words = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10, "twelve": 12, "fifteen": 15, "twenty": 20, "thirty": 30, "forty": 40, "fifty": 50,
+    words = {"a": 1, "an": 1, "single": 1, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10, "twelve": 12, "fifteen": 15, "twenty": 20, "thirty": 30, "forty": 40, "fifty": 50,
              "ek": 1, "do": 2, "teen": 3, "char": 4, "paanch": 5, "panch": 5, "das": 10, "bees": 20, "pachas": 50}
     s = s.strip().lower()
     if s.isdigit():
@@ -60,12 +60,22 @@ def parse(text: str) -> Dict[str, object]:
         ans["business_type"] = best[1]
 
     # people
-    m = re.search(r"(\d+|[a-z]+)\s*(?:people|person|staff|employees|workers|team members|members|teachers|doctors|log|karmchari|कर्मचारी|लोग)", t)
+    m = re.search(r"(\d+|[a-z]+)\s*(?:people|person|staff|employees|workers|team members|members|teachers|doctors|designers|nurses|log|karmchari|कर्मचारी|लोग)", t)
     emp = _num(m.group(1)) if m else None
     # sites
-    m2 = re.search(r"(\d+|[a-z]+)\s*(?:stores|outlets|branches|shops|locations|sites|clinics|centres|centers|restaurants|units|offices|dukaan|dukanein|शाखा|आउटलेट|दुकानें)", t)
-    sites = _num(m2.group(1)) if m2 else None
+    sites = None
+    SITE_WORDS = r"(?:stores|outlets|branches|shops|locations|sites|clinics|centres|centers|restaurants|units|offices|properties|hotels|dukaan|dukanein|शाखा|आउटलेट|दुकानें)\b"
+    # "five branches" first, then "two dental clinics" (one adjective between); overlapping-safe lookahead
+    for pat in (r"(?=(\d+|[a-z]+)\s+" + SITE_WORDS + ")", r"(?=(\d+|[a-z]+)\s+[a-z]+\s+" + SITE_WORDS + ")"):
+        for m2 in re.finditer(pat, t):
+            v = _num(m2.group(1))
+            if v:
+                sites = v
+                break
+        if sites:
+            break
     if sites and sites >= 2 and ans.get("business_type") in (None, "kirana", "salon", "clinic"):
+        # a clinic with 2 sites stays an office bundle; 3+ sites of anything is a multi-site customer
         ans["business_type"] = "chain" if ans.get("business_type") != "clinic" or sites >= 3 else ans["business_type"]
     if emp is not None or sites is not None:
         e = emp or (3 if ans.get("business_type") in ("kirana", "salon", None) else 12)
@@ -74,7 +84,7 @@ def parse(text: str) -> Dict[str, object]:
         ans["employees"] = f"{band}|{s}"
 
     # internet today
-    if re.search(r"hotspot|phone data|mobile data|phone ka net|फ़ोन का|हॉटस्पॉट", t):
+    if re.search(r"hotspot|phone data|mobile data|phone ka net|from my (?:jio |airtel |vi )?phone|(?:jio|airtel|vi) phone|on my phone|phone se|फ़ोन का|फ़ोन से|हॉटस्पॉट", t):
         ans["current_internet"] = "hotspot"
     elif re.search(r"leased line|lease line|dedicated line|लीज़्ड", t):
         ans["current_internet"] = "leased"

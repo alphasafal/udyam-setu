@@ -139,3 +139,119 @@ def test_missing_gst_is_declared_as_assumption():
     ans = parse("auto parts unit in Ludhiana, 60 workers, need machine monitoring"); ans["language"] = "en"
     out = advisor.advise(ans)
     assert any("GSTIN" in a for a in out["assumptions"])
+
+
+# ---- GenAI layer (fake model; no network) -----------------------------------
+class FakeLLM:
+    def __init__(self, replies):
+        self.replies = list(replies); self.seen = []
+    def complete(self, system, user, max_tokens=400):
+        self.seen.append(user)
+        r = self.replies.pop(0) if self.replies else ""
+        if isinstance(r, Exception):
+            raise r
+        return r
+
+
+@pytest.fixture
+def fake_llm():
+    from app import llm
+    yield lambda replies: (llm.set_client(FakeLLM(replies)), llm.get_client())[1]
+    llm.set_client(None)
+
+
+def test_genai_understands_tamil_and_drops_invalid_values(fake_llm):
+    import json as _j
+    c = fake_llm([_j.dumps({"business_type": "clinic", "employees": "6-25|1", "needs": ["email", "teleport"], "has_gstin": "yes",
+                            "city": "Chennai", "current_internet": "warp-drive"})])
+    a = advisor.parse_free_text("சென்னையில் எங்கள் பல் மருத்துவமனை, 10 பேர், GST உள்ளது, மின்னஞ்சல் வேண்டும்", "en")
+    assert a["_source"] == "genai" and a["business_type"] == "clinic" and a["has_gstin"] == "yes"
+    assert a["needs"] == ["email"]                      # 'teleport' dropped
+    assert "current_internet" not in a                   # invalid value dropped
+    assert a["city_tier"] == "1"                        # city → tier from our table, not the model
+
+
+def test_genai_never_sees_pii(fake_llm):
+    c = fake_llm(["{}"])
+    advisor.parse_free_text("my GSTIN is 27QHJXK0658U1ZL, call 9876543210 or a@b.in, PAN ABCXE1234F", "en")
+    sent = c.seen[0]
+    for secret in ("27QHJXK0658U1ZL", "9876543210", "a@b.in", "ABCXE1234F"):
+        assert secret not in sent
+
+
+def test_genai_explanation_rejected_if_numbers_change(fake_llm):
+    fake_llm(["Dukaan Start is just ₹999 a month!"])      # model invents a price
+    out = advisor.advise({"business_type": "kirana", "employees": "1-5|1", "current_internet": "hotspot", "needs": [], "has_gstin": "no", "city_tier": "2", "language": "en"})
+    assert out["summary_source"] == "template" and "₹999" not in out["summary"]
+
+
+def test_genai_explanation_accepted_when_faithful(fake_llm):
+    base = advisor.advise({"business_type": "kirana", "employees": "1-5|1", "current_internet": "hotspot", "needs": [], "has_gstin": "no", "city_tier": "2", "language": "hi"})
+    import re as _re
+    nums = " ".join(_re.findall(r"₹[\d,]+|\b\d+\b", base["summary"]))
+    fake_llm([f"आपकी दुकान के लिए Dukaan Start सही रहेगा। {nums}"])
+    out = advisor.advise({"business_type": "kirana", "employees": "1-5|1", "current_internet": "hotspot", "needs": [], "has_gstin": "no", "city_tier": "2", "language": "hi"})
+    assert out["summary_source"] == "genai"
+
+
+def test_model_down_falls_back_to_offline(fake_llm):
+    fake_llm([RuntimeError("timeout")])
+    a = advisor.parse_free_text("salon in Jaipur, hotspot, want billing", "en")
+    assert a["_source"] == "offline" and a["business_type"] == "salon"
+
+
+# ---- regression tests for bugs found in review ------------------------------
+def test_hinglish_sim_only():
+    from app.nlu import parse
+    assert "simonly" in parse("Kirana dukaan hai Surat mein, bas ek SIM chahiye business ke liye")["needs"]
+
+
+def test_jio_phone_is_hotspot():
+    from app.nlu import parse
+    assert parse("medical store, internet comes from my Jio phone")["current_internet"] == "hotspot"
+
+
+def test_sites_with_adjective_and_overlap():
+    from app.nlu import parse
+    assert parse("I own two dental clinics in Chennai with 15 staff")["employees"].endswith("|2")
+    assert parse("gym with five branches in Bengaluru, 40 staff")["employees"].endswith("|5")
+
+
+def test_factory_without_gstin_gets_starter_lines_and_gst_help():
+    out = advisor.advise({"business_type": "factory", "employees": "26-100|1", "has_gstin": "no", "city_tier": "2", "language": "en"})
+    sel = [l["product_id"] for l in out["quote"]["lines"] if l["selected"]]
+    assert "P05" not in sel and "P08" in sel and "GST registration" in out["handoff_reason"]
+
+
+# ---- 15 more owner descriptions the parser was NOT tuned on (segment routing) ----
+UNSEEN = [
+    ("We have a small medical store in Patna, me and my brother run it, internet comes from my Jio phone", "micro"),
+    ("I own two dental clinics in Chennai with about 15 staff total, need appointments and patient data safe", "prof"),
+    ("Hum log Indore mein ek coaching institute chalate hain, 8 teachers, online classes ke liye fast net chahiye", "prof"),
+    ("chartered accountant practice, 4 people, Vadodara, worried about client data and ransomware, GST registered", "prof"),
+    ("A restaurant group with 6 outlets across Mumbai and Pune, 120 employees, we need one bill and CCTV everywhere", "multi"),
+    ("plastic moulding factory in Nashik, 45 workers, machines keep breaking down unexpectedly", "mfg"),
+    ("Boutique in Kolkata. Only me. I sell on Instagram and WhatsApp mostly.", "micro"),
+    ("diagnostic lab, Lucknow, 20 staff, reports must reach patients on whatsapp, internet keeps going down", "prof"),
+    ("I run a sweet shop in Jaipur, want a billing machine and a QR for UPI", "micro"),
+    ("Hotel group, 3 properties in Goa, guests complain about wifi", "multi"),
+    ("pharmacy chain, 9 stores in Bengaluru, central inventory, GST yes", "multi"),
+    ("Kirana dukaan hai Surat mein, bas ek SIM chahiye business ke liye", "micro"),
+    ("Our architecture studio in Hyderabad has 7 designers who send huge files to clients", "prof"),
+    ("food processing unit near Ludhiana, 80 staff, need a reliable leased line and fleet tracking for 5 trucks", "mfg"),
+    ("Gym with 3 branches in Delhi, want members to check in and CCTV", "multi"),
+]
+
+
+@pytest.mark.parametrize("text,segment", UNSEEN)
+def test_unseen_descriptions_route_to_right_segment(text, segment):
+    from app.nlu import parse
+    ans = parse(text); ans["language"] = "en"
+    assert advisor.build_profile(ans).segment == segment, ans
+
+
+def test_summary_install_days_match_selected_items():
+    out = advisor.advise({"business_type": "salon", "employees": "1-5|1", "current_internet": "hotspot", "needs": ["billing", "customers"], "has_gstin": "yes", "city_tier": "2", "language": "en"})
+    sel = [l["product_id"] for l in out["quote"]["lines"] if l["selected"]]
+    assert out["install_days"] == max(catalogue.CATALOGUE[p].install_days for p in sel)
+    assert f"about {out['install_days']} days" in out["summary"] and out["quote"]["monthly"] == 3195
