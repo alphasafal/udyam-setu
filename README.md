@@ -1,12 +1,12 @@
 # Udyam Setu: Project Udyam Digital prototype (Airtel SYNC, Track A)
 
 A small business goes from "what do I need?" to a working connection in one sitting, on a phone, in its own language.
-Built for the Airtel SYNC case (fictional operator *Accel Business*) by Safal Gupta, B.Tech CSE, VIT Vellore.
+Built for the Airtel SYNC case (fictional operator *Accel Business*) by team **404 Sleep Not Found**, VIT Vellore (Safal Gupta, B.Tech CSE).
 
 - **Everything in one place (GitHub Pages)**: https://alphasafal.github.io/udyam-setu/
 - **Live demo, no sign-in**: https://alphasafal.github.io/udyam-setu/live/ · **GenAI demo** (asks the viewer to allow a language model): https://claude.ai/artifact/15HCtChjeL3t5oFPn9SdSB
 - **Demo video**: `docs/Udyam_Setu_Demo.mp4` (under 3 minutes)
-- **Business case deck**: `docs/Business_Case_Deck.pdf` · **workings**: `docs/business_case.py` → `docs/business_case.md`
+- **Submission deck** (7 slides: diagnosis, competitive analysis, segments, journey + Smart KYC, channels, business case): `docs/Business_Case_Deck.pdf` · **workings**: `docs/business_case.py` → `docs/business_case.md`
 - **Architecture** (each part marked Built / Simulated / Planned): `docs/architecture.png`
 - **Privacy note** (1 page): `docs/Udyam_Setu_Privacy_Note.pdf`
 
