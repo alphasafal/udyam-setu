@@ -79,7 +79,7 @@ A 36-month model in which each month's new customers are tracked separately.
 Result: bundle activation 7.4% → 13.3% (plus about 95 SIM-only sales a quarter); all-in cost per bundle activation ₹15,053 → ₹10,839;
 net −₹0.97 Cr, +₹5.97 Cr, +₹10.76 Cr over three years; payback month 15; 3-year NPV ₹11.95 Cr at 12%.
 Each downside on its own (recovery −25% or halved, prices −15%, churn +5 points, margins −20%) still pays back, by month 29 at worst.
-Recovery halved, prices −15% and churn +5 together do not pay back within three years (NPV −₹5.07 Cr), so the pilot is randomised within each city and gated before any scale spend.
+Recovery halved, prices −15% and churn +5 together do not pay back within three years (NPV −₹5.07 Cr), so the pilot is randomised within each of the 8 largest cities (about 1,300 leads an arm, enough to detect +3 points, and the 25% coverage the first-year model assumes) and gated before any scale spend. Advisor quotes against what similar customers buy today: micro −22%, offices +16%, chains −16%; existing customers keep their plans.
 
 ## Repository layout
 

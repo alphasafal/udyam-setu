@@ -109,7 +109,7 @@ def price_in_band(pid: str, price: int) -> bool:
 # ---------------------------------------------------------------------------
 # Bundle templates. Unit prices are the catalogue minimum (we compete on
 # simplicity, not on a discount the owner cannot verify). Every template is
-# checked against the rule engine in tests/test_rules.py.
+# checked against the rule engine in tests/test_all.py.
 # ---------------------------------------------------------------------------
 
 def _li(pid, qty=1, optional=False, selected=True, why=""):
